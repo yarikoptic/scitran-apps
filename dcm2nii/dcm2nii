@@ -1,27 +1,36 @@
 #!/usr/bin/env python
 
 import os
+import glob
 import scitran.data as scidata
 
 acitivity = ''  # TODO
 status = ''     # TODO
 
-def dcm2nii(input, outbase=None):
-    inpath = os.path.join('/input', input)
+
+def dcm2nii(f, outbase=None):
+
+    print 'locating input...'
+    inpath = os.path.join('/input', f) if f else glob.glob(os.path.join('/input', '*'))[0]
+
+    print 'loading input...'
     ds = scidata.parse(inpath, filetype='dicom', load_data=True, ignore_json=True)
 
     if outbase is None:
-        outbase = os.path.splitext(input)[0].rsplit('_', 1)[0] + 'nifti'
-        outpath = os.path.join('/output', outbase)
+        print 'auto-generating output name...'
+        outbase = '%s_%s_%s' % (ds.exam_no, ds.series_no, ds.acq_no)
 
-    scidata.write(ds, ds.data, outbase=outpath, filetype='nifti')
+    outpath = os.path.join('/output', outbase)
+    generated = scidata.write(ds, ds.data, outbase=outpath, filetype='nifti')
+
+    print 'generated %s' % generated
 
 
 if __name__ == '__main__':
     import argparse
 
     ap = argparse.ArgumentParser()
-    ap.add_argument('input', help='input filename')
+    ap.add_argument('input', help='input filename', nargs='?', default=None)
     ap.add_argument('outbase', help='output filename', nargs='?', default=None)
 
     args = ap.parse_args()
