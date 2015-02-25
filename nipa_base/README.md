@@ -1,6 +1,7 @@
 # scitran/neuroimage_analysis Dockerfile
 
-`docker build --tag scitran/nipa_base:latest ./`
+run the build.sh script to create the scitran/nipa_base:latest image.
+
 
 Ubuntu image configured with neurodebian "non-free" apt repositories.
 
