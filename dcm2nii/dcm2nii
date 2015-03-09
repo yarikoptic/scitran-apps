@@ -18,7 +18,9 @@ def dcm2nii(f, outbase=None):
 
     if outbase is None:
         print 'auto-generating output name...'
-        outbase = '%s_%s_%s' % (ds.exam_no, ds.series_no, ds.acq_no)
+        # outbase = '%s_%s_%s' % (ds.exam_no, ds.series_no, ds.acq_no or '0')
+        orig_name, _ = os.path.splitext(os.path.basename(inpath))
+        outbase = orig_name.replace('_dicom', '_nifti')
 
     outpath = os.path.join('/output', outbase)
     generated = scidata.write(ds, ds.data, outbase=outpath, filetype='nifti')
