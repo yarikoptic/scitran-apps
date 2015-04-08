@@ -19,7 +19,7 @@ RUN pip install \
     git+https://github.com/scitran/pydicom.gitmirror.git@value_mismatch \
     git+https://github.com/nipy/nibabel.git \
     git+https://github.com/moloney/dcmstack.git \
-    git+https://github.com/scitran/data.git@tiff
+    git+https://github.com/scitran/data.git
 
 # clone scripts
 RUN git clone https://github.com/scitran/scripts.git /root/scripts
