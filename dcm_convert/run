@@ -39,7 +39,7 @@ def dicom_convert(fp, outbase=None):
     if ds.scan_type != 'screenshot':
         log.info('performing non screenshot conversion, nifti+montage+txt')
         final_results += scidata.write(ds, ds.data, outbase=outbase + '_nifti', filetype='nifti')      # no reorder
-        final_results += scidata.write(ds, ds.data, outbase=outbase + '_montage', filetype='montage')  # always LPS
+        final_results += scidata.write(ds, ds.data, outbase=outbase + '_montage', filetype='montage', voxel_order='LPS')  # always LPS
 
     elif ds.scan_type == 'screenshot':
         log.info('performing screenshot conversion, png')
