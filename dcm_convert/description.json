@@ -40,14 +40,14 @@
             "fext": ".bval"
         },
         {
-            "type": "tiff",
+            "type": "zip",
             "state": [
                 "derived"
             ],
             "kinds": [
                 "montage"
             ],
-            "fext": ".tiff"
+            "fext": ".zip"
         },
         {
             "type": "png",
