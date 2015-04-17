@@ -4,7 +4,7 @@ RUN apt-get update && apt-get -y install python-dev \
    python-virtualenv \
    git \
    libjpeg-dev \
-   zlib1g-dev \
+   zlib1g-dev
 
 # pillow jpegi and zlib support hack
 RUN ln -s /usr/lib/x86_64-linux-gnu/libjpeg.so /usr/lib
