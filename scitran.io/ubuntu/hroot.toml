@@ -1,7 +1,7 @@
 # Our version of ubuntu, prepared for any usage.
 
 [image]
-	name  = "flywheel.io/ubuntu-14.04"
+	name  = "scitran.io/ubuntu-14.04"
 	upstream = "index.docker.io/ubuntu-14.04"
 
 [target.run]

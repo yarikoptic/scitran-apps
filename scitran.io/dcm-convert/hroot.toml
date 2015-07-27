@@ -1,8 +1,8 @@
 # DCM-Convert: convert DICOM files into other useful formats
 
 [image]
-	name  = "flywheel.io/dcm-convert"
-	upstream = "flywheel.io/ubuntu-14.04"
+	name  = "scitran.io/dcm-convert"
+	upstream = "scitran.io/ubuntu-14.04"
 
 [target.run]
 	command = [ "/scripts/run" ]
