@@ -1,0 +1,14 @@
+# Image imported from docker registry
+
+[image]
+	name  = "index.docker.io/ubuntu-14.04"
+	index = "ubuntu:14.04.2"
+
+[target.run]
+	command = [ "/bin/bash" ]
+
+[target.build]
+	command = [ "/hroot/build.sh" ]
+
+[target.bash]
+	command = [ "/bin/bash" ]

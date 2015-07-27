@@ -1,0 +1,8 @@
+# Pinned deps
+/bin/
+
+# Hroot graph
+/graph
+
+# Docker state
+/flak

@@ -1,0 +1,14 @@
+# DCM-Convert: convert DICOM files into other useful formats
+
+[image]
+	name  = "flywheel.io/dcm-convert"
+	upstream = "flywheel.io/ubuntu-14.04"
+
+[target.run]
+	command = [ "/scripts/run" ]
+
+[target.build]
+	command = [ "/hroot/build.sh" ]
+
+[target.bash]
+	command = [ "/bin/bash" ]

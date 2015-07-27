@@ -1,0 +1,25 @@
+#===========
+# ultrameta
+#===========
+
+[settings]
+	dns = [
+		"8.8.4.4",
+		"8.8.8.8",
+	]
+
+	mounts = [
+		[ ".../scripts/",  "/helper/scripts/",  "ro"],  # Helper scripts
+		[ "./",            "/hroot",            "ro"],  # The current folder, wherever that turns out to be.
+	]
+
+	# What container folder to start in
+	folder = "/hroot"
+
+	# Interactive mode
+	attach = true
+
+	# Delete the container after running
+	purge = true
+
+
