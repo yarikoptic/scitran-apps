@@ -7,11 +7,6 @@
 
 	apt-get update -y -qq
 
-	# Accept new versions of conf files without prompting
-	# Ref http://askubuntu.com/a/104912
-	sudo apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" dist-upgrade
-
-
 	# Disable post-install autorun
 	echo exit 101 | tee /usr/sbin/policy-rc.d
 	chmod +x /usr/sbin/policy-rc.d
