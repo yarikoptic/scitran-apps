@@ -6,7 +6,10 @@
 	cd "$( dirname "${BASH_SOURCE[0]}" )"/..
 
 	apt-get update -y -qq
-	apt-get dist-upgrade -y
+
+	# Accept new versions of conf files without prompting
+	# Ref http://askubuntu.com/a/104912
+	sudo apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" dist-upgrade
 
 
 	# Disable post-install autorun
