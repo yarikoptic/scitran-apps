@@ -6,3 +6,6 @@
 
 # Docker state
 /flak
+
+# Builds
+/export
