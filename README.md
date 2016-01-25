@@ -4,4 +4,3 @@
 
 :warning: **Build system not formalized.** :warning:
 
-For now, `scripts/build-all.sh` will build all apps.
