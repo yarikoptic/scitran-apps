@@ -1,8 +1,8 @@
 # Explicitly disable heuristic cleverness
-install: true
+#install: true
 
 # Do not use containers
-sudo: required
+#sudo: required
 
-script:
-  - sudo ./scripts/ci.sh
+#script:
+#  - sudo ./scripts/ci.sh

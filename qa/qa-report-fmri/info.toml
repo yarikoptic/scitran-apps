@@ -1,0 +1,4 @@
+name    = "qa-report-fmri"
+version = "0.0.4"
+url     = "https://github.com/scitran/apps/qa/qa-report-fmri"
+license = "apache"
