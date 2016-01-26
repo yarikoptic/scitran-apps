@@ -7,7 +7,7 @@
 #   docker run --rm -ti \
 #        -v /path/nifti_file:/flywheel/v0/input \
 #        -v /path/for/output/files:/flywheel/v0/output
-#        vistalab/qa_report_fmri /flywheel/v0/input -i nifti_file.nii.gz
+#        scitran/qa-report-fmri /flywheel/v0/input -i nifti_file.nii.gz
 #
 
 FROM ubuntu-debootstrap:trusty
@@ -49,7 +49,7 @@ COPY run ${FLYWHEEL}/run
 COPY info.toml ${FLYWHEEL}/info.toml
 
 # Put the python code in place
-COPY qa_report_sa.py ${FLYWHEEL}/qa_report.py
+COPY qa-report-fmri.py ${FLYWHEEL}/qa_report.py
 
 ENTRYPOINT ["/flywheel/v0/run"]
 
