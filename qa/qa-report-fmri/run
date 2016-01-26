@@ -60,7 +60,7 @@ if [[ -z $outputs ]]
         # Create metadata json file
         output_name=`basename $outputs`
         output_type="${outputs##*.}" # File extension
-        printf '{"acquisition": {"files": [{"name": "%s", "type": "image/%s"}]}}\n' "$output_name" "$output_type" > $OUTPUT_DIR/.flywheel.json
+        printf '{"acquisition": {"files": [{"name": "%s", "type": "qa"}]}}\n' "$output_name" > $OUTPUT_DIR/.metadata.json
 fi
 
 exit 0
