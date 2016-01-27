@@ -1,0 +1,5 @@
+name    = "dicom_mr_classifier"
+version = "0.0.1"
+flywheel = "0"
+url     = "https://github.com/scitran/apps/converters/dicom-mr-classifier"
+license = "apache"
