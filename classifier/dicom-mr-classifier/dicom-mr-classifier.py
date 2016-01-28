@@ -20,7 +20,7 @@ def dicom_convert(fp, outbase=None):
 
     """
     if not os.path.exists(fp):
-        print 'coult not find %s' % fp
+        print 'could not find %s' % fp
         print 'checking input directory ...'
         if os.path.exists(os.path.join('/input', fp)):
             fp = os.path.join('/input', fp)
@@ -39,7 +39,7 @@ def dicom_convert(fp, outbase=None):
 
     # Write metadata file
     metadata = {}
-    
+
     metadata['session'] = {}
     metadata['session']['operator'] = ds.operator
 
@@ -51,18 +51,18 @@ def dicom_convert(fp, outbase=None):
     metadata['session']['subject']['lastname'] = ds.subj_lastname
     metadata['session']['subject']['firstname_hash'] = ds.firstname_hash  # unrecoverable, if anonymizing
     metadata['session']['subject']['lastname_hash'] = ds.lastname_hash  # unrecoverable, if anonymizing
-    
+
     metadata['acquisition'] = {}
     metadata['acquisition']['instrument'] = ds.domain
     metadata['acquisition']['label'] = ds.series_desc
     metadata['acquisition']['measurement'] = ds.scan_type
     metadata['acquisition']['metadata'] = {}
     metadata['acquisition']['metadata'] = ds._hdr
-    
+
     metafile_outname = os.path.join(os.path.dirname(outbase),'.metadata.json')
     with open(metafile_outname, 'w') as metafile:
         json.dump(metadata, metafile)
-    
+
     final_results.append(metafile_outname)
 
     return final_results
