@@ -42,6 +42,9 @@ RUN  pip install dipy --upgrade \
     && pip install nipy --upgrade \
     && pip install matplotlib --upgrade
 
+# Trigger build of font cache
+RUN python -c "from matplotlib import font_manager"
+
 # Make directory for flywheel spec (v0)
 ENV FLYWHEEL /flywheel/v0
 RUN mkdir -p ${FLYWHEEL}
