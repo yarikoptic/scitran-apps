@@ -46,7 +46,6 @@ def dicom_convert(fp, outbase=None):
     metadata['session']['subject'] = {}
     metadata['session']['subject']['sex'] = ds.subj_sex
     metadata['session']['subject']['age'] = ds.subj_age
-    metadata['session']['subject']['code'] = ds.subj_code
     metadata['session']['subject']['firstname'] = ds.subj_firstname
     metadata['session']['subject']['lastname'] = ds.subj_lastname
     metadata['session']['subject']['firstname_hash'] = ds.firstname_hash  # unrecoverable, if anonymizing
