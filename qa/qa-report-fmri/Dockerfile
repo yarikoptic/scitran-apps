@@ -15,30 +15,32 @@ FROM ubuntu-debootstrap:trusty
 MAINTAINER Michael Perry <lmperry@stanford.edu>
 
 # Install dependencies
-RUN apt-get update && apt-get -y install python-dev \
-   git \
-   libjpeg-dev \
-   zlib1g-dev \
-   pkg-config \
-   libpng12-dev \
-   libfreetype6-dev
+RUN apt-get update && apt-get -y install \
+    python-dev \
+    python-pip \
+    git \
+    libjpeg-dev \
+    zlib1g-dev \
+    pkg-config \
+    libpng12-dev \
+    libfreetype6-dev \
+    libblas-dev \
+    liblapack-dev \
+    libatlas-base-dev \
+    gfortran \
+    zip \
+    unzip
 
 # Link libs: pillow jpegi and zlib support hack
 RUN ln -s /usr/lib/x86_64-linux-gnu/libjpeg.so /usr/lib
 RUN ln -s /usr/lib/x86_64-linux-gnu/libz.so /usr/lib
 
 # Install scitran.data dependencies
-RUN apt-get -y install \
-    python-numpy \
-    python-pip \
-    python-scipy \
-    python-dipy \
-    python-nipy \
-    python-nibabel \
-    zip \
-    unzip
-
-RUN  pip install dipy --upgrade \
+RUN  pip install pip --upgrade \
+    && pip install numpy --upgrade \
+    && pip install scipy --upgrade \
+    && pip install dipy --upgrade \
+    && pip install nibabel --upgrade \
     && pip install nipy --upgrade \
     && pip install matplotlib --upgrade
 
