@@ -30,7 +30,7 @@ if [[ -z $@ ]]
       input_file=`find $INPUT_DIR -type f -name "*.nii*" | head -1`
       if [[ -n $input_file ]] 
         then
-            $FLYWHEEL_BASE/qa_report.py $INPUT_DIR -i $input_file 
+            $FLYWHEEL_BASE/qa_report.py "$INPUT_DIR" -i "$input_file" 
       else
             echo "No inputs were provided and $INPUT_DIR has no valid input files!"
             exit 1

@@ -2,7 +2,7 @@
 # Exports the container in the cwd.
 # The container can be exported once it's started with 
 
-version=0.1.1
+version=0.1.2
 outname=qa-report-fmri-$version.tar
 container=qa-report-fmri
 image=scitran/qa-report-fmri
