@@ -39,7 +39,7 @@ fi
 
 
 # Get a list of the files in the output directory
-outputs=`find $INPUT_DIR -type f -name "*"`
+outputs=`find $OUTPUT_DIR -type f -name "*"`
 
 
 # If outputs exist, then go on...

@@ -50,40 +50,41 @@ def dicom_convert(fp, outbase=None):
     # Write metadata file
     output_files = os.listdir(os.path.dirname(outbase))
     files = []
+    if len(output_files) > 0:
+        for f in output_files:
 
-    for f in output_files:
+            fdict = {}
+            fdict['name'] = f
 
-        fdict = {}
-        fdict['name'] = f
+            if f.endswith('nifti.nii.gz'):
+                ftype = 'nifti'
 
-        if f.endswith('nifti.nii.gz'):
-            ftype = 'nifti'
+            elif f.endswith('bvec'):
+                ftype = 'bvec'
 
-        elif f.endswith('bvec'):
-            ftype = 'bvec'
+            elif f.endswith('bval'):
+                ftype = 'bval'
 
-        elif f.endswith('bval'):
-            ftype = 'bval'
+            elif f.endswith('montage.zip'):
+                ftype = 'montage'
 
-        elif f.endswith('montage.zip'):
-            ftype = 'montage'
+            elif f.endswith('.png'):
+                ftype = 'screenshot'
 
-        elif f.endswith('.png'):
-            ftype = 'screenshot'
+            else:
+                ftype = 'None'
 
-        else:
-            ftype = 'None'
+            fdict['type'] = ftype
+            files.append(fdict)
 
-        fdict['type'] = ftype
-        files.append(fdict)
+        metadata = {}
+        metadata['acquisition'] = {}
+        metadata['acquisition']['files'] = files
 
-    metadata = {}
-    metadata['acquisition'] = {}
-    metadata['acquisition']['files'] = files
-
-    with open(os.path.join(os.path.dirname(outbase),'.metadata.json'), 'w') as metafile:
-        json.dump(metadata, metafile)
-
+        with open(os.path.join(os.path.dirname(outbase),'.metadata.json'), 'w') as metafile:
+            json.dump(metadata, metafile)
+    else:
+        log.info('No output files generated.')
     return final_results
 
 if __name__ == '__main__':
@@ -101,6 +102,8 @@ if __name__ == '__main__':
     log.info('job start: %s' % datetime.datetime.utcnow())
     results = dicom_convert(args.dcmtgz, args.outbase)
     log.info('job stop: %s' % datetime.datetime.utcnow())
-
-    log.info('generated %s' % ', '.join(results))
+    if results:
+        log.info('generated %s' % ', '.join(results))
+    else:
+        log.info('Failed.')
 
