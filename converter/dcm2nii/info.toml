@@ -1,0 +1,5 @@
+name    = "dcm2nii"
+version = "0.0.1"
+flywheel = "0"
+url     = "https://github.com/scitran/apps/tree/master/converter/dcm2nii"
+license = "bsd"

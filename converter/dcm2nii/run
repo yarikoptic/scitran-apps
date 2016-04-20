@@ -1,0 +1,65 @@
+#! /bin/bash
+#
+#
+FLYWHEEL_BASE=/flywheel/v0
+CONTAINER='[scitran/dcm2nii]'
+
+# Make sure that /output directory is empty (all content will be removed later).
+OUTPUT_DIR=$FLYWHEEL_BASE/output
+INPUT_DIR=$FLYWHEEL_BASE/input
+
+# Make sure the input directory is not empty
+if [[ "$(ls -A $INPUT_DIR)" ]] ; then
+    echo "$CONTAINER  Starting..."
+else
+    echo "$CONTAINER  Input directory is empty:"
+    exit 1
+fi
+
+# Make sure that /output directory is empty before we begin
+if [ "$(ls -A $OUTPUT_DIR)" ]; then
+    echo -e "$CONTAINER  $OUTPUT_DIR is not Empty! Please provide an empty directory and mount at '$OUTPUT_DIR'."
+    exit 1
+fi
+
+# The directory that will be sent to dcm2nii
+dicom_dir=''
+
+# Unzip the input file (or gunzip it)
+input_file=`find $INPUT_DIR -type f`
+
+if [[ "$input_file" == *.zip ]] ; then
+    cd $INPUT_DIR
+    echo "$CONTAINER  Unzipping $input_file"
+    unzip -q "$input_file"
+elif [[ "$input_file" == *.gz ]] ; then
+    cd $INPUT_DIR
+    echo "$CONTAINER  Gunzipping $input_file"
+    gunzip "$input_file"
+    dicom_dir=$INPUT_DIR
+else
+    dicom_dir=$INPUT_DIR
+fi
+
+if [ -z "$dicom_dir" ] ; then
+    dicom_dir=$(find $INPUT_DIR -type d)
+fi
+
+# Run the algorithm
+echo -e "$CONTAINER  running dcm2nii..."
+dcm2nii $@ -o $OUTPUT_DIR $dicom_dir
+
+# Get a list of the files in the output directory
+outputs=`find $OUTPUT_DIR -type f -name "*"`
+
+# If outputs exist, then go on...
+if [ -z "$outputs" ] ; then
+    echo "$CONTAINER  No results found in output directory... Exiting(1)!"
+    exit 1
+else
+    chmod -R 777 $OUTPUT_DIR
+    echo -e "$CONTAINER  Success! Wrote:\n`ls $OUTPUT_DIR`"
+fi
+
+exit 0
+
