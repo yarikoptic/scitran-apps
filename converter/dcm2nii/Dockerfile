@@ -15,6 +15,7 @@ MAINTAINER Michael Perry <lmperry@stanford.edu>
 # Run apt-get calls
 RUN apt-get update \
     && apt-get install -y \
+    python \
     mricron \
     unzip \
     gzip
@@ -27,6 +28,8 @@ COPY dcm2nii.ini $DCM2NIIDIR/dcm2nii.ini
 ENV FLYWHEEL /flywheel/v0
 RUN mkdir -p ${FLYWHEEL}
 COPY run ${FLYWHEEL}/run
+COPY metadata_create.py ${FLYWHEEL}/metadata_create.py
+RUN chmod +x ${FLYWHEEL}/metadata_create.py
 COPY info.toml ${FLYWHEEL}/info.toml
 
 # Configure entrypoint

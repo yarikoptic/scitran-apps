@@ -31,11 +31,11 @@ input_file=`find $INPUT_DIR -type f`
 if [[ "$input_file" == *.zip ]] ; then
     cd $INPUT_DIR
     echo "$CONTAINER  Unzipping $input_file"
-    unzip -q "$input_file"
+    unzip -q `basename "$input_file"`
 elif [[ "$input_file" == *.gz ]] ; then
     cd $INPUT_DIR
     echo "$CONTAINER  Gunzipping $input_file"
-    gunzip "$input_file"
+    gunzip -q "$input_file"
     dicom_dir=$INPUT_DIR
 else
     dicom_dir=$INPUT_DIR
@@ -58,6 +58,7 @@ if [ -z "$outputs" ] ; then
     exit 1
 else
     chmod -R 777 $OUTPUT_DIR
+    $FLYWHEEL_BASE/metadata_create.py $OUTPUT_DIR
     echo -e "$CONTAINER  Success! Wrote:\n`ls $OUTPUT_DIR`"
 fi
 
