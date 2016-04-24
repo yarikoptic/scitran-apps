@@ -26,7 +26,7 @@ fi
 dicom_dir=''
 
 # Unzip the input file (or gunzip it)
-input_file=`find $INPUT_DIR -type f`
+input_file=`find $INPUT_DIR -not -path '*/\.*' -type f`
 
 if [[ "$input_file" == *.zip ]] ; then
     cd $INPUT_DIR
@@ -42,7 +42,7 @@ else
 fi
 
 if [ -z "$dicom_dir" ] ; then
-    dicom_dir=$(find $INPUT_DIR -type d)
+    dicom_dir=$(find $INPUT_DIR/* -maxdepth 0 -not -path '*/\.*' -type d)
 fi
 
 # Run the algorithm
@@ -50,7 +50,7 @@ echo -e "$CONTAINER  running dcm2nii..."
 dcm2nii $@ -o $OUTPUT_DIR $dicom_dir
 
 # Get a list of the files in the output directory
-outputs=`find $OUTPUT_DIR -type f -name "*"`
+outputs=`find $OUTPUT_DIR -not -path '*/\.*' -type f -name "*"`
 
 # If outputs exist, then go on...
 if [ -z "$outputs" ] ; then
