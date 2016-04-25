@@ -31,7 +31,7 @@ input_file=`find $INPUT_DIR -not -path '*/\.*' -type f`
 if [[ "$input_file" == *.zip ]] ; then
     cd $INPUT_DIR
     echo "$CONTAINER  Unzipping $input_file"
-    unzip -q `basename "$input_file"`
+    unzip -q "`basename "$input_file"`"
 elif [[ "$input_file" == *.gz ]] ; then
     cd $INPUT_DIR
     echo "$CONTAINER  Gunzipping $input_file"
@@ -47,7 +47,7 @@ fi
 
 # Run the algorithm
 echo -e "$CONTAINER  running dcm2nii..."
-dcm2nii $@ -o $OUTPUT_DIR $dicom_dir
+dcm2nii $@ -o "$OUTPUT_DIR" "$dicom_dir"
 
 # Get a list of the files in the output directory
 outputs=`find $OUTPUT_DIR -not -path '*/\.*' -type f -name "*"`
