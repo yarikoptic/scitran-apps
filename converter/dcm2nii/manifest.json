@@ -1,0 +1,17 @@
+{
+	"name":     "dcm2nii",
+	"url":      "https://github.com/scitran/apps/tree/master/converter/dcm2nii",
+	"license":  "bsd",
+	"flywheel": "0",
+	"version":  "0.0.4",
+
+	"config": {
+	},
+
+	"inputs": {
+		"dicom": {
+			"base": "file",
+			"type": { "enum": [ "dicom" ] }
+		}
+	}
+}

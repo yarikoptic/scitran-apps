@@ -5,7 +5,7 @@ FLYWHEEL_BASE=/flywheel/v0
 
 # Make sure that /output directory is empty (all content will be removed later).
 OUTPUT_DIR=$FLYWHEEL_BASE/output
-INPUT_DIR=$FLYWHEEL_BASE/input
+INPUT_DIR=$FLYWHEEL_BASE/input/dicom
 
 if [ "-d" "$OUTPUT_DIR" ]
     then

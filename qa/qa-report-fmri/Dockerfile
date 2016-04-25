@@ -51,7 +51,7 @@ RUN python -c "from matplotlib import font_manager"
 ENV FLYWHEEL /flywheel/v0
 RUN mkdir -p ${FLYWHEEL}
 COPY run ${FLYWHEEL}/run
-COPY info.toml ${FLYWHEEL}/info.toml
+COPY manifest.json ${FLYWHEEL}/manifest.json
 
 # Put the python code in place
 COPY qa-report-fmri.py ${FLYWHEEL}/qa_report.py

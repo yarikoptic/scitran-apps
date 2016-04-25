@@ -1,0 +1,17 @@
+{
+	"name":     "qa-report-fmri",
+	"url":      "https://github.com/scitran/apps/tree/master/qa/qa-report-fmri",
+	"license":  "apache",
+	"flywheel": "0",
+	"version":  "0.1.2",
+
+	"config": {
+	},
+
+	"inputs": {
+		"nifti": {
+			"base": "file",
+			"type": { "enum": [ "nifti" ] }
+		}
+	}
+}

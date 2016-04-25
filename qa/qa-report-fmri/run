@@ -4,12 +4,12 @@
 #
 #
 
-# Built to flywheel-v0 spec. 
+# Built to flywheel-v0 spec.
 FLYWHEEL_BASE=/flywheel/v0
 
-# Make sure that /output directory is empty (all content will be removed later). 
+# Make sure that /output directory is empty (all content will be removed later).
 OUTPUT_DIR=$FLYWHEEL_BASE/output
-INPUT_DIR=$FLYWHEEL_BASE/input
+INPUT_DIR=$FLYWHEEL_BASE/input/nifti
 
 if [ "-d" "$OUTPUT_DIR" ]
     then
@@ -23,14 +23,14 @@ if [ "-d" "$OUTPUT_DIR" ]
 fi
 
 
-# Check if the inputs are empty. 
+# Check if the inputs are empty.
 # If so, show example usage and prompt for help
-if [[ -z $@ ]] 
+if [[ -z $@ ]]
     then
       input_file=`find $INPUT_DIR -type f -name "*.nii*" | head -1`
-      if [[ -n $input_file ]] 
+      if [[ -n $input_file ]]
         then
-            $FLYWHEEL_BASE/qa_report.py "$INPUT_DIR" -i "$input_file" 
+            $FLYWHEEL_BASE/qa_report.py "$INPUT_DIR" -i "$input_file"
       else
             echo "No inputs were provided and $INPUT_DIR has no valid input files!"
             exit 1
@@ -40,23 +40,23 @@ else
 fi
 
 
-# Get a list of the files in the output directory  
+# Get a list of the files in the output directory
 outputs=`find $INPUT_DIR -type f -name "*.png"`
 
 
 # If outputs exist, then go on...
-if [[ -z $outputs ]] 
+if [[ -z $outputs ]]
     then
         echo "No results found in output directory... Exiting"
         exit 1
     else
-        for o in $outputs; 
+        for o in $outputs;
             do
                 mv $o $OUTPUT_DIR
             done
         chmod -R 777 $OUTPUT_DIR
         echo -e "Wrote: `ls $OUTPUT_DIR`"
-        
+
         # Create metadata json file
         output_name=`basename $outputs`
         output_type="${outputs##*.}" # File extension
