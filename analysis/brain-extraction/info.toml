@@ -1,0 +1,5 @@
+name    = "brain-extraction"
+version = "0.0.0"
+flywheel = "0"
+url     = "https://github.com/scitran/apps/analysis/brain-extraction"
+license = "apache"

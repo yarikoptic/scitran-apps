@@ -1,0 +1,58 @@
+#! /bin/bash
+#
+# This script is meant to evoke FSL's brain extraction algorithm without requiring any input arguments.
+#
+#
+CONTAINER="[scitran/brain-extract]"
+
+# Built to flywheel-v0 spec.
+FLYWHEEL_BASE=/flywheel/v0
+
+# Make sure that /output directory is empty (all content will be removed later).
+OUTPUT_DIR=$FLYWHEEL_BASE/output
+INPUT_DIR=$FLYWHEEL_BASE/input
+
+echo -e "$CONTAINER  Initiated"
+
+if [[ ! -d "$OUTPUT_DIR" ]] || [[ ! -d "$INPUT_DIR" ]]
+    then
+        echo "$CONTAINER  $OUTPUT_DIR not found!"
+        exit 1
+fi
+
+
+# Check if the inputs are empty.
+if [[ -z $@ ]]
+    then
+      input_file=`find $INPUT_DIR/* -maxdepth 0 -not -path '*/\.*' -type f -name "*.nii*" | head -1`
+      if [[ -n $input_file ]]
+        then
+            echo "$CONTAINER  Running bet2 on `basename "$input_file"`"
+            output_file_base=$OUTPUT_DIR/`basename "$input_file" .nii.gz`
+            bet2 "$input_file" "$output_file_base"_brain-extracted
+      else
+            echo "$CONTAINER  No inputs were provided and $INPUT_DIR has no valid input files!"
+            exit 1
+      fi
+else
+    bet2 $@
+fi
+
+
+# Get a list of the files in the output directory (written with the output basename)
+outputs=$(find $OUTPUT_DIR/* -maxdepth 0 -type f -name "`basename "$output_file_base"`*")
+
+
+# If outputs exist, then show them and exit
+if [[ -z $outputs ]]
+    then
+        echo "$CONTAINER  No results found in output directory... Exiting"
+        exit 1
+    else
+        echo -e "$CONTAINER  Wrote: `ls $OUTPUT_DIR`"
+        echo -e "$CONTAINER  Done!"
+fi
+
+exit 0
+
+
