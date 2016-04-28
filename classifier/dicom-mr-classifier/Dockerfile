@@ -1,5 +1,5 @@
 # scitran/dicom-mr-classifier
-# 
+#
 # Use Scitran Data to classify raw DICOM data (zip) from Siemens or GE.
 # See http://github.com/scitran/data for source code.
 #
@@ -30,6 +30,7 @@ RUN ln -s /usr/lib/x86_64-linux-gnu/libz.so /usr/lib
 RUN pip install \
     numpy==1.9.0 \
     pytz \
+    tzlocal \
     pillow \
     git+https://github.com/scitran/pydicom.git@0.9.9_value_vr_mismatch \
     git+https://github.com/nipy/nibabel.git@3bc31e9a6191fc54667b3387ed5dfaced46bf755 \

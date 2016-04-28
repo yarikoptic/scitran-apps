@@ -1,6 +1,9 @@
 #! /bin/bash
 # This script is meant to evoke the algorithm without requiring any input arguments
 #
+
+CONTAINER="[ scitran/dicom-mr-classifier ]"
+
 FLYWHEEL_BASE=/flywheel/v0
 
 # Make sure that /output directory is empty (all content will be removed later).
@@ -10,11 +13,11 @@ INPUT_DIR=$FLYWHEEL_BASE/input
 if [ "-d" "$OUTPUT_DIR" ]
     then
         if [ "$(ls -A $OUTPUT_DIR)" ]; then
-            echo -e "$OUTPUT_DIR is not Empty! Please provide an empty directory and mount at '$OUTPUT_DIR'."
+            echo -e "$CONTAINER  $OUTPUT_DIR is not Empty! Please provide an empty directory and mount at '$OUTPUT_DIR'."
             exit 1
         fi
     else
-        echo "$OUTPUT_DIR not found. It will be created."
+        echo -e "$CONTAINER  $OUTPUT_DIR not found. It will be created."
         mkdir $OUTPUT_DIR
 fi
 
@@ -30,7 +33,7 @@ if [[ -z $@ ]]
             output_file_base=$OUTPUT_DIR/${bni%_dicom.zip}
             /flywheel/v0/dicom-mr-classifier.py "$input_file" "$output_file_base"
       else
-            echo "No inputs were provided and $INPUT_DIR has no valid input files!"
+            echo -e "No inputs were provided and $INPUT_DIR has no valid input files!"
             exit 1
       fi
 else
@@ -45,11 +48,11 @@ outputs=`find $OUTPUT_DIR -type f -name ".metadata.json"`
 # If outputs exist, then go on...
 if [[ -z $outputs ]]
     then
-        echo "No results found in output directory... Exiting"
+        echo -e "$CONTAINER  No results found in output directory... Exiting"
         exit 1
     else
         chmod -R 777 $OUTPUT_DIR
-        echo -e "Success."
+        echo -e "$CONTAINER  Success."
 fi
 
 exit 0

@@ -2,22 +2,32 @@
 
 import os
 import json
+import pytz
+import tzlocal
 import logging
 import datetime
-logging.basicConfig()
-log = logging.getLogger('dicom-mr-classifier')
 import scitran.data as scidata
 
+logging.basicConfig()
+log = logging.getLogger('dicom-mr-classifier')
 
-def dicom_convert(fp, outbase=None):
+def timestamp(date, time, timezone):
+    if date and time:
+        return datetime.datetime.strptime(date + time[:6], '%Y%m%d%H%M%S')
+#        return localize_timestamp(datetime.datetime.strptime(date + time[:6], '%Y%m%d%H%M%S'), timezone)
+    return None
+
+def localize_timestamp(timestamp, timezone):
+    return timezone.localize(timestamp)
+
+def get_time(ds, timezone):
+    session_timestamp = timestamp(ds.study_date, ds.study_time, timezone)
+    acquisition_timestamp = timestamp(ds.acq_date, ds.acq_time, timezone)
+    return session_timestamp, acquisition_timestamp
+
+def dicom_classify(fp, outbase, timezone):
     """
-    Attempts multiple types of conversion on dicom files.
-
-    Attempts to create a nifti for all files, except screen shots.
-    Also attesmpt to create tiff montages of all files.
-
-    tiff creation requires imagemagick.
-
+    Extracts metadata from dicom zip and writes to .metadata.json.
     """
     if not os.path.exists(fp):
         print 'could not find %s' % fp
@@ -27,12 +37,16 @@ def dicom_convert(fp, outbase=None):
             print 'found %s' % fp
 
     if not outbase:
-        fn = os.path.basename(fp)
-        outbase = os.path.join('/output', fn[:fn.index('_dicom')])   # take everything before dicom...
+        outbase = '/flywheel/v0/output'   # take everything before dicom...
         log.info('setting outbase to %s' % outbase)
 
     log.info('reading metadata %s' % fp)
+
+    # TODO: Replace this with calls to pydicom
     ds = scidata.parse(fp, filetype='dicom', ignore_json=True, load_data=False)
+
+    session_timestamp, acquisition_timestamp = get_time(ds, timezone);
+
     log.info('done')
 
     final_results = []
@@ -51,6 +65,9 @@ def dicom_convert(fp, outbase=None):
     metadata['session']['subject']['firstname_hash'] = ds.firstname_hash  # unrecoverable, if anonymizing
     metadata['session']['subject']['lastname_hash'] = ds.lastname_hash  # unrecoverable, if anonymizing
 
+    #metadata['session']['timezone'] = timezone.zone
+    metadata['session']['timestamp'] = session_timestamp.isoformat()
+
     metadata['acquisition'] = {}
     metadata['acquisition']['instrument'] = ds.domain
     metadata['acquisition']['label'] = ds.series_desc
@@ -58,6 +75,10 @@ def dicom_convert(fp, outbase=None):
     metadata['acquisition']['metadata'] = {}
     metadata['acquisition']['metadata'] = ds._hdr
 
+    #metadata['acquisition']['timezone'] = timezone.zone
+    metadata['acquisition']['timestamp'] = acquisition_timestamp.isoformat()
+
+    # Write out the metadata to file (.metadata.json)
     metafile_outname = os.path.join(os.path.dirname(outbase),'.metadata.json')
     with open(metafile_outname, 'w') as metafile:
         json.dump(metadata, metafile)
@@ -70,16 +91,25 @@ if __name__ == '__main__':
 
     import argparse
     ap = argparse.ArgumentParser()
-    ap.add_argument('dcmtgz', help='path to dicom zip')
+    ap.add_argument('dcmzip', help='path to dicom zip')
     ap.add_argument('outbase', nargs='?', help='outfile name prefix')
     ap.add_argument('--log_level', help='logging level', default='info')
+    ap.add_argument('-z', '--timezone', help='instrument timezone [system timezone]', default=None)
     args = ap.parse_args()
 
     log.setLevel(getattr(logging, args.log_level.upper()))
     logging.getLogger('sctran.data').setLevel(logging.INFO)
 
     log.info('job start: %s' % datetime.datetime.utcnow())
-    results = dicom_convert(args.dcmtgz, args.outbase)
+
+    # Don't set the timezone for now
+    set_timezone = False
+    timezone = args.timezone
+    if set_timezone and not timezone:
+        timezone = tzlocal.get_localzone()
+
+    results = dicom_classify(args.dcmzip, args.outbase, timezone)
+
     log.info('job stop: %s' % datetime.datetime.utcnow())
 
     log.info('generated %s' % ', '.join(results))
