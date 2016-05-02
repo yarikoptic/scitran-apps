@@ -3,7 +3,7 @@
 	"url":      "https://github.com/scitran/apps/converters/dicom-mr-classifier",
 	"license":  "apache",
 	"flywheel": "0",
-	"version":  "0.0.3",
+	"version":  "0.0.4",
 
 	"config": {
 	},
