@@ -23,6 +23,14 @@ def localize_timestamp(timestamp, timezone):
 def get_time(ds, timezone):
     session_timestamp = timestamp(ds.study_date, ds.study_time, timezone)
     acquisition_timestamp = timestamp(ds.acq_date, ds.acq_time, timezone)
+    if session_timestamp:
+        session_timestamp = session_timestamp.isoformat()
+    else:
+        session_timestamp = ''
+    if acquisition_timestamp:
+        acquisition_timestamp = acquisition_timestamp.isoformat()
+    else:
+        acquisition_timestamp = ''
     return session_timestamp, acquisition_timestamp
 
 def dicom_classify(fp, outbase, timezone):
@@ -66,7 +74,7 @@ def dicom_classify(fp, outbase, timezone):
     metadata['session']['subject']['lastname_hash'] = ds.lastname_hash  # unrecoverable, if anonymizing
 
     #metadata['session']['timezone'] = timezone.zone
-    metadata['session']['timestamp'] = session_timestamp.isoformat()
+    metadata['session']['timestamp'] = session_timestamp
 
     metadata['acquisition'] = {}
     metadata['acquisition']['instrument'] = ds.domain
@@ -76,7 +84,7 @@ def dicom_classify(fp, outbase, timezone):
     metadata['acquisition']['metadata'] = ds._hdr
 
     #metadata['acquisition']['timezone'] = timezone.zone
-    metadata['acquisition']['timestamp'] = acquisition_timestamp.isoformat()
+    metadata['acquisition']['timestamp'] = acquisition_timestamp
 
     # Write out the metadata to file (.metadata.json)
     metafile_outname = os.path.join(os.path.dirname(outbase),'.metadata.json')
