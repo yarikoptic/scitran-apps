@@ -1,5 +1,5 @@
 # scitran/dcm-convert
-# 
+#
 # Use Scitran Data to convert raw DICOM data (zip) from Siemens or GE to NIfTI.
 # See http://github.com/scitran/data for source code.
 #
@@ -40,7 +40,7 @@ RUN pip install \
 ENV FLYWHEEL /flywheel/v0
 RUN mkdir -p ${FLYWHEEL}
 COPY run ${FLYWHEEL}/run
-COPY info.toml ${FLYWHEEL}/info.toml
+COPY manifest.json ${FLYWHEEL}/manifest.json
 
 # Put the python code in place
 COPY dcm-convert.py ${FLYWHEEL}/dcm-convert.py

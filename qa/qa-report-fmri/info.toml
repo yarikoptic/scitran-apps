@@ -1,5 +1,0 @@
-name    = "qa-report-fmri"
-version = "0.1.2"
-flywheel = "0"
-url     = "https://github.com/scitran/apps/tree/master/qa/qa-report-fmri"
-license = "apache"

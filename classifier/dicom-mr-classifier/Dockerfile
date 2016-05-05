@@ -41,7 +41,7 @@ RUN pip install \
 ENV FLYWHEEL /flywheel/v0
 RUN mkdir -p ${FLYWHEEL}
 COPY run ${FLYWHEEL}/run
-COPY info.toml ${FLYWHEEL}/info.toml
+COPY manifest.json ${FLYWHEEL}/manifest.json
 
 # Put the python code in place
 COPY dicom-mr-classifier.py ${FLYWHEEL}/dicom-mr-classifier.py
