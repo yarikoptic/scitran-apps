@@ -3,7 +3,7 @@
 	"url":      "https://github.com/scitran/apps/tree/master/converter/dcm-convert",
 	"license":  "apache",
 	"flywheel": "0",
-	"version":  "0.3.2",
+	"version":  "0.3.3",
 
 	"config": {
 	},
