@@ -1,0 +1,18 @@
+{
+    name: "fsl-fast",
+    url: "https://github.com/scitran/apps/analysis/fsl-fast",
+    license: "apache",
+    flywheel: "0",
+    version: "0.0.0",
+    config: { },
+    inputs: {
+        dicom: {
+            base: "file",
+            type: {
+                enum: [
+                "nifti"
+                ]
+            }
+        }
+    }
+}
