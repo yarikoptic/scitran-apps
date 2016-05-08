@@ -3,7 +3,7 @@
 # This script is meant to evoke FSL's brain extraction algorithm without requiring any input arguments.
 #
 #
-CONTAINER="[scitran/brain-extract]"
+CONTAINER="[scitran/fsl-bet]"
 
 # Built to flywheel-v0 spec.
 FLYWHEEL_BASE=/flywheel/v0

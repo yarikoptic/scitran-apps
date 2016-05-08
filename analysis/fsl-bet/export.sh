@@ -3,9 +3,9 @@
 # The container can be exported once it's started with
 
 version=0.0.0
-outname=brain-extraction-$version.tar
-container=brain-extraction
-image=scitran/brain-extraction
+outname=fsl-bet-$version.tar
+container=fsl-bet
+image=scitran/fsl-bet
 
 # Check if input was passed in.
 if [[ -n $1 ]]; then

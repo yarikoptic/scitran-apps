@@ -2,7 +2,7 @@
 #
 # Example usage:
 #   docker run --rm -ti \
-#       scitran/bet <input_fileroot> <output_fileroot> [options]
+#       scitran/fsl-bet <input_fileroot> <output_fileroot> [options]
 #
 
 
