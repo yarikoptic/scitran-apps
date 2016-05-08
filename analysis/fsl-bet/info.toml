@@ -1,5 +1,0 @@
-name    = "fsl-bet"
-version = "0.0.0"
-flywheel = "0"
-url     = "https://github.com/scitran/apps/analysis/fsl-bet"
-license = "apache"

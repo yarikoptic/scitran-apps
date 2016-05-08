@@ -29,7 +29,7 @@ ENV FLYWHEEL /flywheel/v0
 RUN mkdir -p ${FLYWHEEL}
 COPY run ${FLYWHEEL}/run
 
-COPY info.toml ${FLYWHEEL}/info.toml
+COPY manifest.json ${FLYWHEEL}/manifest.json
 
 # Configure entrypoint
 ENTRYPOINT ["/flywheel/v0/run"]
