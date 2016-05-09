@@ -1,15 +1,16 @@
 {
-    name: "fsl-bet",
-    url: "https://github.com/scitran/apps/analysis/fsl-bet",
-    license: "apache",
-    flywheel: "0",
-    version: "0.0.1",
-    config: { },
-    inputs: {
-        nifti: {
-            base: "file",
-            type: {
-                enum: [
+    "name": "fsl-bet",
+    "url": "https://github.com/scitran/apps/analysis/fsl-bet",
+    "license": "apache",
+    "flywheel": "0",
+    "version": "0.0.2",
+    "config": {
+        },
+    "inputs": {
+        "nifti": {
+            "base": "file",
+            "type": {
+                "enum": [
                 "nifti"
                 ]
             }
