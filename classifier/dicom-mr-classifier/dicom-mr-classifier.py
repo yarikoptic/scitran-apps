@@ -73,8 +73,8 @@ def dicom_classify(fp, outbase, timezone):
     metadata['session']['subject']['firstname_hash'] = ds.firstname_hash  # unrecoverable, if anonymizing
     metadata['session']['subject']['lastname_hash'] = ds.lastname_hash  # unrecoverable, if anonymizing
 
-    #metadata['session']['timezone'] = timezone.zone
-    metadata['session']['timestamp'] = session_timestamp
+    if session_timestamp:
+        metadata['session']['timestamp'] = session_timestamp
 
     metadata['acquisition'] = {}
     metadata['acquisition']['instrument'] = ds.domain
@@ -83,8 +83,8 @@ def dicom_classify(fp, outbase, timezone):
     metadata['acquisition']['metadata'] = {}
     metadata['acquisition']['metadata'] = ds._hdr
 
-    #metadata['acquisition']['timezone'] = timezone.zone
-    metadata['acquisition']['timestamp'] = acquisition_timestamp
+    if acquisition_timestamp:
+        metadata['acquisition']['timestamp'] = acquisition_timestamp
 
     # Write out the metadata to file (.metadata.json)
     metafile_outname = os.path.join(os.path.dirname(outbase),'.metadata.json')
