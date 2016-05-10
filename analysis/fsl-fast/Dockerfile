@@ -31,6 +31,8 @@ RUN mkdir -p ${FLYWHEEL}
 COPY run ${FLYWHEEL}/run
 
 COPY manifest.json ${FLYWHEEL}/manifest.json
+COPY metadata_create.py ${FLYWHEEL}/metadata_create.py
+RUN chmod +x ${FLYWHEEL}/metadata_create.py
 
 # Configure entrypoint
 ENTRYPOINT ["/flywheel/v0/run"]

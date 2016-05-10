@@ -2,7 +2,7 @@
 # Exports the container in the cwd.
 # The container can be exported once it's started with
 
-version=0.0.3
+version=0.0.4
 outname=fsl-bet-$version.tar
 container=fsl-bet
 image=scitran/fsl-bet
