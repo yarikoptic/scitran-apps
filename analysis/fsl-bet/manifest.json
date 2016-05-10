@@ -3,7 +3,7 @@
     "url": "https://github.com/scitran/apps/analysis/fsl-bet",
     "license": "apache",
     "flywheel": "0",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "config": {
         },
     "inputs": {

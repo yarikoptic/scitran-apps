@@ -18,12 +18,11 @@ RUN apt-get update \
         fsl-5.0-core \
         zip
 
-# Configure environment
+# Configure environment (Must also be done in the run script)
 ENV FSLDIR=/usr/lib/fsl/5.0
 ENV FSLOUTPUTTYPE=NIFTI_GZ
 ENV PATH=$PATH:$FSLDIR
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$FSLDIR
-
 RUN echo ". /etc/fsl/5.0/fsl.sh" >> /root/.bashrc
 
 # Make directory for flywheel spec (v0)
