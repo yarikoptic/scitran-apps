@@ -23,6 +23,9 @@ def meta_create(outbase):
             if f.endswith('.nii.gz'):
                 ftype = 'nifti'
 
+            if f.endswith('.zip'):
+                ftype = 'zip'
+
             elif f.endswith('bvec'):
                 ftype = 'bvec'
 
