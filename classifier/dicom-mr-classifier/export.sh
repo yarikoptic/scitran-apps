@@ -2,7 +2,7 @@
 # Exports the container in the cwd.
 # The container can be exported once it's started with
 
-version=0.0.7
+version=0.0.8
 outname=dicom_mr_classifier-$version.tar
 container=dicom-mr-classifier
 image=scitran/dicom-mr-classifier

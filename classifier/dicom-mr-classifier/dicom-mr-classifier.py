@@ -14,20 +14,20 @@ log = logging.getLogger('dicom-mr-classifier')
 def timestamp(date, time, timezone):
     if date and time:
         return datetime.datetime.strptime(date + time[:6], '%Y%m%d%H%M%S')
-#        return localize_timestamp(datetime.datetime.strptime(date + time[:6], '%Y%m%d%H%M%S'), timezone)
     return None
-
-def localize_timestamp(timestamp, timezone):
-    return timezone.localize(timestamp)
 
 def get_time(ds, timezone):
     session_timestamp = timestamp(ds.study_date, ds.study_time, timezone)
     acquisition_timestamp = timestamp(ds.acq_date, ds.acq_time, timezone)
     if session_timestamp:
+        if session_timestamp.tzinfo is None:
+            session_timestamp = pytz.timezone('UTC').localize(session_timestamp)
         session_timestamp = session_timestamp.isoformat()
     else:
         session_timestamp = ''
     if acquisition_timestamp:
+        if acquisition_timestamp.tzinfo is None:
+            acquisition_timestamp = pytz.timezone('UTC').localize(acquisition_timestamp)
         acquisition_timestamp = acquisition_timestamp.isoformat()
     else:
         acquisition_timestamp = ''
@@ -45,7 +45,7 @@ def dicom_classify(fp, outbase, timezone):
             print 'found %s' % fp
 
     if not outbase:
-        outbase = '/flywheel/v0/output'   # take everything before dicom...
+        outbase = '/flywheel/v0/output'
         log.info('setting outbase to %s' % outbase)
 
     log.info('reading metadata %s' % fp)
@@ -70,8 +70,8 @@ def dicom_classify(fp, outbase, timezone):
     metadata['session']['subject']['age'] = ds.subj_age
     metadata['session']['subject']['firstname'] = ds.subj_firstname
     metadata['session']['subject']['lastname'] = ds.subj_lastname
-    metadata['session']['subject']['firstname_hash'] = ds.firstname_hash  # unrecoverable, if anonymizing
-    metadata['session']['subject']['lastname_hash'] = ds.lastname_hash  # unrecoverable, if anonymizing
+    metadata['session']['subject']['firstname_hash'] = ds.firstname_hash
+    metadata['session']['subject']['lastname_hash'] = ds.lastname_hash
 
     if session_timestamp:
         metadata['session']['timestamp'] = session_timestamp
@@ -110,11 +110,7 @@ if __name__ == '__main__':
 
     log.info('job start: %s' % datetime.datetime.utcnow())
 
-    # Don't set the timezone for now
-    set_timezone = False
     timezone = args.timezone
-    if set_timezone and not timezone:
-        timezone = tzlocal.get_localzone()
 
     results = dicom_classify(args.dcmzip, args.outbase, timezone)
 
