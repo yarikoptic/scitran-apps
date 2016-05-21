@@ -1,0 +1,27 @@
+{
+    "name": "cmrr-rtmask",
+    "url": "https://github.com/scitran/apps/analysis/cmrr-rtmask",
+    "license": "apache",
+    "flywheel": "0",
+    "version": "0.0.0",
+    "config": {
+        },
+    "inputs": {
+        "functional": {
+            "base": "file",
+            "type": {
+                "enum": [
+                "nifti"
+                ]
+            }
+        },
+        "anatomy": {
+            "base": "file",
+            "type": {
+                "enum": [
+                "nifti"
+                ]
+            }
+        }
+    }
+}

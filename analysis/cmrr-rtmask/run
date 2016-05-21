@@ -1,0 +1,72 @@
+#! /bin/bash
+#
+# This script is meant to evoke FSL's brain extraction algorithm without requiring any input arguments.
+#
+#
+CONTAINER="[scitran/cmrr-rtmask]"
+
+# Built to flywheel-v0 spec.
+FLYWHEEL_BASE=/flywheel/v0
+
+# Configure the ENV
+source $FLYWHEEL_BASE/mcr_env
+
+# Make sure that /output directory is empty (all content will be removed later).
+OUTPUT_DIR=$FLYWHEEL_BASE/output
+INPUT_DIR=$FLYWHEEL_BASE/input
+FUNC_DIR=$INPUT_DIR/functional
+ANAT_DIR=$INPUT_DIR/anatomy
+INPUT_JSON=$INPUT_DIR/input.json
+
+echo -e "$CONTAINER  Initiated"
+
+if [[ ! -d "$OUTPUT_DIR" ]] || [[ ! -d "$INPUT_DIR" ]]
+    then
+        echo "$CONTAINER  $OUTPUT_DIR not found!"
+        exit 1
+fi
+
+# Check for inputs, build json file, and execute the MCR exe
+if [[ -z $@ ]]
+    then
+      functional_input_file=`find $FUNC_DIR/* -maxdepth 0 -not -path '*/\.*' -type f -name "*.nii*" | head -1`
+      anatomy_input_file=`find $ANAT_DIR/* -maxdepth 0 -not -path '*/\.*' -type f -name "*.nii*" | head -1`
+      if [[ -n $functional_input_file ]] || [[ -n $anatomy_input_file ]]
+        then
+            # Build json string and save to file
+            printf '{"input_dir":"%s","output_dir":"%s","functional_nifti_file":"%s", "anatomy_nifti_file":"%s"}\n' "$INPUT_DIR" "$OUTPUT_DIR" "`basename $functional_input_file`" "`basename $anatomy_input_file`" > $INPUT_JSON
+            
+            # Execute the code
+            echo "$CONTAINER  Running on `basename "$functional_input_file"` and `basename "$anatomy_input_file"`"
+            mv $functional_input_file $anatomy_input_file $INPUT_DIR # Required by the MCR exe.
+            $FLYWHEEL_BASE/rtMask $INPUT_JSON
+      else
+            echo "$CONTAINER  No inputs were provided and $INPUT_DIR has no valid input files!"
+            exit 1
+      fi
+else
+    $FLYWHEEL_BASE/rtMask $@
+fi
+
+
+# Get a list of the files in the output directory
+outputs=$(find $OUTPUT_DIR/* -maxdepth 0 -type f -name "*nii*")
+
+# If outputs exist, compress, generate metadata, and exit
+if [[ -z $outputs ]]
+    then
+        echo "$CONTAINER  No results found in output directory... Exiting"
+        exit 1
+    else
+        #echo -e "$CONTAINER  Compressing outputs"
+        cd $OUTPUT_DIR
+        #zip rtmask.zip $outputs
+        #rm -f $outputs
+        $FLYWHEEL_BASE/metadata_create.py $OUTPUT_DIR
+        echo -e "$CONTAINER  Wrote: `ls`" 
+        echo -e "$CONTAINER  Done!"
+fi
+
+exit 0
+
+
