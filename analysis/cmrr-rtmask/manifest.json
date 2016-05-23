@@ -3,7 +3,7 @@
     "url": "https://github.com/scitran/apps/analysis/cmrr-rtmask",
     "license": "apache",
     "flywheel": "0",
-    "version": "0.0.0",
+    "version": "0.0.1",
     "config": {
         },
     "inputs": {

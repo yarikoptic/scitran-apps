@@ -13,7 +13,7 @@
 #     docker run -ti --rm -v `pwd`/input:/flywheel/v0/input -v `pwd`/output:/flywheel/v0/output scitran/cmrr-rtmask
 #
 
-# All the heavy lifiting is done from vistalab/mcr-v82 
+# All the heavy lifiting is done from vistalab/mcr-v82
 # The ENV from that image is duplicated in mcr-env, which is sourced from 'run'.
 FROM vistalab/mcr-v82
 MAINTAINER Michael Perry <lmperry@stanford.edu>
@@ -22,6 +22,7 @@ MAINTAINER Michael Perry <lmperry@stanford.edu>
 RUN apt-get update \
     && apt-get install -y \
     zip \
+    gzip \
     python
 
 # Make directory for flywheel spec (v0)

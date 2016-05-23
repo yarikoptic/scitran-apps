@@ -33,9 +33,15 @@ if [[ -z $@ ]]
       anatomy_input_file=`find $ANAT_DIR/* -maxdepth 0 -not -path '*/\.*' -type f -name "*.nii*" | head -1`
       if [[ -n $functional_input_file ]] || [[ -n $anatomy_input_file ]]
         then
+            # Gunzip the input files (in case of compressed inputs)
+            gunzip $functional_input_file &> /dev/null && \
+                functional_input_file=`dirname $functional_input_file`/`basename $functional_input_file .gz`
+            gunzip $anatomy_input_file &> /dev/null && \
+                anatomy_input_file=`dirname $anatomy_input_file`/`basename $anatomy_input_file .gz`
+
             # Build json string and save to file
             printf '{"input_dir":"%s","output_dir":"%s","functional_nifti_file":"%s", "anatomy_nifti_file":"%s"}\n' "$INPUT_DIR" "$OUTPUT_DIR" "`basename $functional_input_file`" "`basename $anatomy_input_file`" > $INPUT_JSON
-            
+
             # Execute the code
             echo "$CONTAINER  Running on `basename "$functional_input_file"` and `basename "$anatomy_input_file"`"
             mv $functional_input_file $anatomy_input_file $INPUT_DIR # Required by the MCR exe.
@@ -63,7 +69,7 @@ if [[ -z $outputs ]]
         #zip rtmask.zip $outputs
         #rm -f $outputs
         $FLYWHEEL_BASE/metadata_create.py $OUTPUT_DIR
-        echo -e "$CONTAINER  Wrote: `ls`" 
+        echo -e "$CONTAINER  Wrote: `ls`"
         echo -e "$CONTAINER  Done!"
 fi
 
