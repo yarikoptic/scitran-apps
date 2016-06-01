@@ -1,9 +1,12 @@
 {
 	"name":     "dcm-convert",
-	"url":      "https://github.com/scitran/apps/tree/master/converter/dcm-convert",
+	"description": "Use Scitran/Data to convert raw DICOM data to NIfTI format. Works with Siemens or GE.",
+	"author": "Michael Perry <lmperry@stanford.edu>",
+	"url": "https://github.com/scitran/data",
+	"source": "https://github.com/scitran/apps/tree/master/converter/dcm-convert",
 	"license":  "apache",
 	"flywheel": "0",
-	"version":  "0.3.3",
+	"version":  "0.3.4",
 
 	"config": {
 	},

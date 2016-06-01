@@ -1,9 +1,12 @@
 {
     "name": "cmrr-rtmask",
-    "url": "https://github.com/scitran/apps/analysis/cmrr-rtmask",
+    "description": "Warp anatomical masks defined in MNI space into subject specific space. Provides masks of hipamyg, cuneus, and acc.",
+    "author": "John Strupp, Center for Magnetic Resonance Research",
+    "url": "https://www.cmrr.umn.edu/",
+    "source": "https://github.com/scitran/apps/analysis/cmrr-rtmask",
     "license": "apache",
     "flywheel": "0",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "config": {
         },
     "inputs": {

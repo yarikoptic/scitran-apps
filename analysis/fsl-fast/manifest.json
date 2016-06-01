@@ -1,9 +1,12 @@
 {
     "name": "fsl-fast",
-    "url": "https://github.com/scitran/apps/analysis/fsl-fast",
+    "description": "FMRIB Automated Segmentation Tool. FMRIB Software Library (FSL) v5.0",
+	  "author": "Michael Perry <lmperry@stanford.edu>",
+    "url": "http://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FAST",
+    "source": "https://github.com/scitran/apps/analysis/fsl-fast",
     "license": "apache",
     "flywheel": "0",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "config": {
         },
     "inputs": {

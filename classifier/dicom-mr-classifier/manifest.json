@@ -1,9 +1,12 @@
 {
 	"name":     "dicom_mr_classifier",
-	"url":      "https://github.com/scitran/apps/converters/dicom-mr-classifier",
+	"description": "Use Scitran/Data to classify raw DICOM data from Siemens or GE.",
+	"author": "Michael Perry <lmperry@stanford.edu>",
+	"url": "https://github.com/scitran/data",
+	"source": "https://github.com/scitran/apps/converters/dicom-mr-classifier",
 	"license":  "apache",
 	"flywheel": "0",
-	"version":  "0.0.8",
+	"version":  "0.0.9",
 
 	"config": {
 	},
