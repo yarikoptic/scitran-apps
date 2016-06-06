@@ -4,7 +4,7 @@
 	"author": "Michael Perry <lmperry@stanford.edu>",
 	"url": "https://www.nitrc.org/projects/dcm2nii/",
 	"source": "https://github.com/scitran/apps/tree/master/converter/dcm2nii",
-	"license":  "bsd",
+	"license":  "BSD-2-Clause",
 	"flywheel": "0",
 	"version":  "0.0.6",
 

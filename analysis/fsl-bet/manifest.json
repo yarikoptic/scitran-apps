@@ -4,7 +4,7 @@
 	  "author": "Michael Perry <lmperry@stanford.edu>",
     "url": "http://fsl.fmrib.ox.ac.uk/fsl/fslwiki/BET",
     "source": "https://github.com/scitran/apps/analysis/fsl-bet",
-    "license": "apache",
+    "license": "Apache-2.0",
     "flywheel": "0",
     "version": "0.0.5",
     "config": {

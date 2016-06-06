@@ -4,7 +4,7 @@
     "author": "John Strupp, Center for Magnetic Resonance Research",
     "url": "https://www.cmrr.umn.edu/",
     "source": "https://github.com/scitran/apps/analysis/cmrr-rtmask",
-    "license": "apache",
+    "license": "Apache-2.0",
     "flywheel": "0",
     "version": "0.0.2",
     "config": {
