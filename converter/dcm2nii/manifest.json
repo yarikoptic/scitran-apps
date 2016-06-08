@@ -6,7 +6,7 @@
 	"source": "https://github.com/scitran/apps/tree/master/converter/dcm2nii",
 	"license":  "BSD-2-Clause",
 	"flywheel": "0",
-	"version":  "0.0.6",
+	"version":  "0.0.7",
 
 	"config": {
 	},
