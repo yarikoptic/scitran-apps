@@ -31,13 +31,13 @@ if [[ -z $@ ]]
         then
             bni=`basename "$input_file"`
             output_file_base=$OUTPUT_DIR/${bni%_dicom.zip}
-            /flywheel/v0/dicom-mr-classifier.py "$input_file" "$output_file_base"
+            PYHONPATH=$PYTHONPATH:/flywheel/v0/ python $FLYWHEEL_BASE/dicom-mr-classifier.py "$input_file" "$output_file_base"
       else
             echo -e "No inputs were provided and $INPUT_DIR has no valid input files!"
             exit 1
       fi
 else
-    $FLYWHEEL_BASE/dicom-mr-classifier.py $@
+    PYHONPATH=$PYTHONPATH:/flywheel/v0/ python $FLYWHEEL_BASE/dicom-mr-classifier.py $@
 fi
 
 

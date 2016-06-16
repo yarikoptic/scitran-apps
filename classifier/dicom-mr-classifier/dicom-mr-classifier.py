@@ -3,22 +3,64 @@
 import os
 import json
 import pytz
+import dicom
 import tzlocal
 import logging
+import zipfile
 import datetime
-import scitran.data as scidata
+import measurement_from_label
 
 logging.basicConfig()
 log = logging.getLogger('dicom-mr-classifier')
+
+def parse_patient_age(age):
+    """
+    Parse patient age from string.
+    convert from 70d, 10w, 2m, 1y to datetime.timedelta object.
+    Returns age as duration in seconds.
+    """
+    if age == 'None':
+        return None
+
+    conversion = {  # conversion to days
+        'Y': 365,
+        'M': 30,
+        'W': 7,
+        'D': 1,
+    }
+    scale = age[-1:]
+    value = age[:-1]
+    return datetime.timedelta(int(value) * conversion.get(scale)).total_seconds()
 
 def timestamp(date, time, timezone):
     if date and time:
         return datetime.datetime.strptime(date + time[:6], '%Y%m%d%H%M%S')
     return None
 
-def get_time(ds, timezone):
-    session_timestamp = timestamp(ds.study_date, ds.study_time, timezone)
-    acquisition_timestamp = timestamp(ds.acq_date, ds.acq_time, timezone)
+def get_time(dcm, timezone):
+    if hasattr(dcm, 'StudyDate') and hasattr(dcm, 'StudyTime'):
+        study_date = dcm.StudyDate
+        study_time = dcm.StudyTime
+    elif hasattr(dcm, 'StudyDateTime'):
+        study_date = dcm.StudyDateTime[0:8]
+        study_time = dcm.StudyDateTime[8:]
+    else:
+        study_date = None
+        study_time = None
+
+    if hasattr(dcm, 'AcquisitionDate') and hasattr(dcm, 'AcquisitionTime'):
+        acquitision_date = dcm.AcquisitionDate
+        acquisition_time = dcm.AcquisitionTime
+    elif hasattr(dcm, 'AcquisitionDateTime'):
+        acquitision_date = dcm.AcquisitionDateTime[0:8]
+        acquisition_time = dcm.AcquisitionDateTime[8:]
+    else:
+        acquitision_date = None
+        acquisition_time = None
+
+    session_timestamp = timestamp(dcm.StudyDate, dcm.StudyTime, timezone)
+    acquisition_timestamp = timestamp(acquitision_date, acquisition_time, timezone)
+
     if session_timestamp:
         if session_timestamp.tzinfo is None:
             session_timestamp = pytz.timezone('UTC').localize(session_timestamp)
@@ -32,6 +74,15 @@ def get_time(ds, timezone):
     else:
         acquisition_timestamp = ''
     return session_timestamp, acquisition_timestamp
+
+def get_sex(sex_str):
+    if sex_str == 'M':
+        sex = 'male'
+    elif sex_str == 'F':
+        sex = 'female'
+    else:
+        sex = ''
+    return sex
 
 def dicom_classify(fp, outbase, timezone):
     """
@@ -48,41 +99,74 @@ def dicom_classify(fp, outbase, timezone):
         outbase = '/flywheel/v0/output'
         log.info('setting outbase to %s' % outbase)
 
-    log.info('reading metadata %s' % fp)
-
-    # TODO: Replace this with calls to pydicom
-    ds = scidata.parse(fp, filetype='dicom', ignore_json=True, load_data=False)
-
-    session_timestamp, acquisition_timestamp = get_time(ds, timezone);
-
-    log.info('done')
-
+    # List of the output files that will be written
     final_results = []
+
+    # Extract the first file in the zip to /tmp/ and read it
+    zip = zipfile.ZipFile(fp)
+    for n in range(0, len(zip.namelist())):
+        dcm_path = zip.extract(zip.namelist()[n], '/tmp')
+        if os.path.isfile(dcm_path):
+            try:
+                dcm = dicom.read_file(dcm_path)
+                break
+            except:
+                pass
+
+    # Extract the header values
+    header = {}
+    exclude = ['[Unknown]', 'PixelData', 'Pixel Data',  '[User defined data]', '[Protocol Data Block (compressed)]', '[Histogram tables]', '[Unique image iden]']
+    types = [int, float, str, list]
+    for t in dcm.dir():
+        if t not in exclude:
+            value = dcm.get(t)
+            if value:
+                if type(value) not in types:
+                    try:
+                        value = float(value)
+                    except:
+                        value = str(value)
+                if (type(value) == str and len(value) < 10240):
+                    header[t] = value
+                elif type(value) != str and type(value) in types:
+                    header[t] = value
+                else:
+                    print 'Excluding ' + t
+
+    # header = {}
+    # exclude = ['[Unknown]', 'Pixel Data', '[User defined data]', '[Protocol Data Block (compressed)]', '[Histogram tables]', '[Unique image iden]']
+    # types = [int, float, str, list, tuple]
+    # for k in dcm.keys():
+    #     if hasattr(dcm[k], 'name') and hasattr(dcm[k], 'value') and (dcm[k].name not in exclude):
+    #         value = dcm[k].value
+    #         if type(value) not in types:
+    #             try:
+    #                 value = float(value)
+    #             except:
+    #                 value = str(value)
+    #         header[dcm[k].name.replace('[','').replace(']','')] = value
+    #     else:
+    #         pass
+    log.info('done')
 
     # Write metadata file
     metadata = {}
-
     metadata['session'] = {}
-    metadata['session']['operator'] = ds.operator
-
+    metadata['session']['operator'] = dcm.get('OperatorsName')
     metadata['session']['subject'] = {}
-    metadata['session']['subject']['sex'] = ds.subj_sex
-    metadata['session']['subject']['age'] = ds.subj_age
-    metadata['session']['subject']['firstname'] = ds.subj_firstname
-    metadata['session']['subject']['lastname'] = ds.subj_lastname
-    metadata['session']['subject']['firstname_hash'] = ds.firstname_hash
-    metadata['session']['subject']['lastname_hash'] = ds.lastname_hash
-
+    metadata['session']['subject']['sex'] = get_sex(dcm.get('PatientSex'))
+    metadata['session']['subject']['age'] = parse_patient_age(dcm.get('PatientAge'))
+    metadata['session']['subject']['firstname'] = dcm.get('PatientName').given_name
+    metadata['session']['subject']['lastname'] = dcm.get('PatientName').family_name
+    session_timestamp, acquisition_timestamp = get_time(dcm, timezone);
     if session_timestamp:
         metadata['session']['timestamp'] = session_timestamp
-
     metadata['acquisition'] = {}
-    metadata['acquisition']['instrument'] = ds.domain
-    metadata['acquisition']['label'] = ds.series_desc
-    metadata['acquisition']['measurement'] = ds.scan_type
+    metadata['acquisition']['instrument'] = dcm.get('Modality')
+    metadata['acquisition']['label'] = dcm.get('SeriesDescription')
+    metadata['acquisition']['measurement'] = measurement_from_label.infer_measurement(dcm.get('SeriesDescription'))
     metadata['acquisition']['metadata'] = {}
-    metadata['acquisition']['metadata'] = ds._hdr
-
+    metadata['acquisition']['metadata'] = header
     if acquisition_timestamp:
         metadata['acquisition']['timestamp'] = acquisition_timestamp
 
@@ -107,14 +191,9 @@ if __name__ == '__main__':
 
     log.setLevel(getattr(logging, args.log_level.upper()))
     logging.getLogger('sctran.data').setLevel(logging.INFO)
-
     log.info('job start: %s' % datetime.datetime.utcnow())
 
-    timezone = args.timezone
-
-    results = dicom_classify(args.dcmzip, args.outbase, timezone)
+    results = dicom_classify(args.dcmzip, args.outbase, args.timezone)
 
     log.info('job stop: %s' % datetime.datetime.utcnow())
-
     log.info('generated %s' % ', '.join(results))
-
