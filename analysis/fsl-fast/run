@@ -53,12 +53,7 @@ if [[ -z $outputs ]]
         echo "$CONTAINER  No results found in output directory... Exiting"
         exit 1
     else
-        echo -e "$CONTAINER  Compressing outputs"
-        cd $OUTPUT_DIR
-        raw_outputs=$(find * -maxdepth 0 -type f -name "`basename "$output_file_base"`*")
-        zip $output_file_base.zip $raw_outputs
-        rm -f $outputs
-        $FLYWHEEL_BASE/metadata_create.py $OUTPUT_DIR
+        $FLYWHEEL_BASE/metadata_create.py $OUTPUT_DIR $CONTAINER
         echo -e "$CONTAINER  Done!"
 fi
 

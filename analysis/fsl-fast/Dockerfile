@@ -34,6 +34,10 @@ COPY manifest.json ${FLYWHEEL}/manifest.json
 COPY metadata_create.py ${FLYWHEEL}/metadata_create.py
 RUN chmod +x ${FLYWHEEL}/metadata_create.py
 
+# Add types from scitran
+WORKDIR ${FLYWHEEL}
+ADD https://raw.githubusercontent.com/scitran/utilities/master/file_types.json ./types.json
+
 # Configure entrypoint
 ENTRYPOINT ["/flywheel/v0/run"]
 

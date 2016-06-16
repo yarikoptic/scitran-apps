@@ -8,37 +8,29 @@ def meta_create(outbase):
     """
     Create metadata file based on output files
     """
+
     if not os.path.isdir(outbase):
             outbase = '/flywheel/v0/output'
+
+    with open('/flywheel/v0/types.json') as data_file:
+            data_types = json.load(data_file)
 
     # Write metadata file
     output_files = os.listdir(outbase)
     files = []
     if len(output_files) > 0:
         for f in output_files:
-
             fdict = {}
             fdict['name'] = f
 
-            if f.endswith('.nii.gz'):
-                ftype = 'nifti'
-
-            if f.endswith('.zip'):
-                ftype = 'zip'
-
-            elif f.endswith('bvec'):
-                ftype = 'bvec'
-
-            elif f.endswith('bval'):
-                ftype = 'bval'
-
-            elif f.endswith('montage.zip'):
-                ftype = 'montage'
-
-            elif f.endswith('.png'):
-                ftype = 'screenshot'
-
-            else:
+            # Check file extension against every data_type to determine
+            # The correct type
+            ftype = ''
+            for d in data_types:
+                extensions = list(data_types[d])
+                if any([f.endswith(ext) for ext in extensions]):
+                    ftype = d
+            if not ftype:
                 ftype = 'None'
 
             fdict['type'] = ftype
@@ -58,11 +50,12 @@ if __name__ == '__main__':
     import argparse
     ap = argparse.ArgumentParser()
     ap.add_argument('outbase', help='outfile name prefix')
+    ap.add_argument('gearname', help='Name of running gear', default='gear')
     args = ap.parse_args()
 
     metafile = meta_create(args.outbase)
 
     if os.path.isfile(metafile):
-        print '[scitran/fsl-fast]  generated %s' % metafile
+        print args.gearname + '  generated %s' % metafile
     else:
-        print '[scitran/fsl-fast]  Failed to create metadata.json'
+        print args.gearname + '  Failed to create metadata.json'
