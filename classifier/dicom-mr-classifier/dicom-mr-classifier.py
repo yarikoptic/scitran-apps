@@ -33,11 +33,17 @@ def parse_patient_age(age):
     return datetime.timedelta(int(value) * conversion.get(scale)).total_seconds()
 
 def timestamp(date, time, timezone):
+    """
+    Return datetime formatted string
+    """
     if date and time:
         return datetime.datetime.strptime(date + time[:6], '%Y%m%d%H%M%S')
     return None
 
 def get_time(dcm, timezone):
+    """
+    Parse Study Date and Time, return acquisition and session timestamps
+    """
     if hasattr(dcm, 'StudyDate') and hasattr(dcm, 'StudyTime'):
         study_date = dcm.StudyDate
         study_time = dcm.StudyTime
@@ -76,6 +82,9 @@ def get_time(dcm, timezone):
     return session_timestamp, acquisition_timestamp
 
 def get_sex(sex_str):
+    """
+    Return male or female string.
+    """
     if sex_str == 'M':
         sex = 'male'
     elif sex_str == 'F':
@@ -84,26 +93,25 @@ def get_sex(sex_str):
         sex = ''
     return sex
 
-def dicom_classify(fp, outbase, timezone):
+def dicom_classify(zip_file_path, outbase, timezone):
     """
-    Extracts metadata from dicom zip and writes to .metadata.json.
+    Extracts metadata from dicom file header within a zip file and writes to .metadata.json.
     """
-    if not os.path.exists(fp):
-        print 'could not find %s' % fp
+
+    # Check for input file path
+    if not os.path.exists( zip_file_path):
+        print 'could not find %s' %  zip_file_path
         print 'checking input directory ...'
-        if os.path.exists(os.path.join('/input', fp)):
-            fp = os.path.join('/input', fp)
-            print 'found %s' % fp
+        if os.path.exists(os.path.join('/input', zip_file_path)):
+            zip_file_path = os.path.join('/input', zip_file_path)
+            print 'found %s' % zip_file_path
 
     if not outbase:
         outbase = '/flywheel/v0/output'
         log.info('setting outbase to %s' % outbase)
 
-    # List of the output files that will be written
-    final_results = []
-
     # Extract the first file in the zip to /tmp/ and read it
-    zip = zipfile.ZipFile(fp)
+    zip = zipfile.ZipFile(zip_file_path)
     for n in range(0, len(zip.namelist())):
         dcm_path = zip.extract(zip.namelist()[n], '/tmp')
         if os.path.isfile(dcm_path):
@@ -149,38 +157,54 @@ def dicom_classify(fp, outbase, timezone):
     #         pass
     log.info('done')
 
-    # Write metadata file
+    # Build metadata
     metadata = {}
+
+    # Session metadata
     metadata['session'] = {}
-    metadata['session']['operator'] = dcm.get('OperatorsName')
-    metadata['session']['subject'] = {}
-    metadata['session']['subject']['sex'] = get_sex(dcm.get('PatientSex'))
-    metadata['session']['subject']['age'] = parse_patient_age(dcm.get('PatientAge'))
-    metadata['session']['subject']['firstname'] = dcm.get('PatientName').given_name
-    metadata['session']['subject']['lastname'] = dcm.get('PatientName').family_name
     session_timestamp, acquisition_timestamp = get_time(dcm, timezone);
     if session_timestamp:
         metadata['session']['timestamp'] = session_timestamp
+    if hasattr(dcm, 'OperatorsName') and dcm.get('OperatorsName'):
+        metadata['session']['operator'] = dcm.get('OperatorsName')
+
+    # Subject Metadata
+    metadata['session']['subject'] = {}
+    if hasattr(dcm, 'PatientSex') and get_sex(dcm.get('PatientSex')):
+        metadata['session']['subject']['sex'] = get_sex(dcm.get('PatientSex'))
+    if hasattr(dcm, 'PatientAge') and dcm.get('PatientAge'):
+        metadata['session']['subject']['age'] = parse_patient_age(dcm.get('PatientAge'))
+    if hasattr(dcm, 'PatientName') and dcm.get('PatientName').given_name:
+        metadata['session']['subject']['firstname'] = dcm.get('PatientName').given_name
+    if hasattr(dcm, 'PatientName') and dcm.get('PatientName').family_name:
+        metadata['session']['subject']['lastname'] = dcm.get('PatientName').family_name
+
+    # Acquisition metadata
     metadata['acquisition'] = {}
-    metadata['acquisition']['instrument'] = dcm.get('Modality')
-    metadata['acquisition']['label'] = dcm.get('SeriesDescription')
-    metadata['acquisition']['measurement'] = measurement_from_label.infer_measurement(dcm.get('SeriesDescription'))
-    metadata['acquisition']['metadata'] = {}
-    metadata['acquisition']['metadata'] = header
+    if hasattr(dcm, 'Modality') and dcm.get('Modality'):
+        metadata['acquisition']['instrument'] = dcm.get('Modality')
+    if hasattr(dcm, 'SeriesDescription') and dcm.get('SeriesDescription'):
+        metadata['acquisition']['label'] = dcm.get('SeriesDescription')
+        metadata['acquisition']['measurement'] = measurement_from_label.infer_measurement(dcm.get('SeriesDescription'))
     if acquisition_timestamp:
         metadata['acquisition']['timestamp'] = acquisition_timestamp
+
+    # Acquisition metadata from dicom header
+    metadata['acquisition']['metadata'] = {}
+    if header:
+        metadata['acquisition']['metadata'] = header
 
     # Write out the metadata to file (.metadata.json)
     metafile_outname = os.path.join(os.path.dirname(outbase),'.metadata.json')
     with open(metafile_outname, 'w') as metafile:
         json.dump(metadata, metafile)
 
-    final_results.append(metafile_outname)
-
-    return final_results
+    return metafile_outname
 
 if __name__ == '__main__':
-
+    """
+    Generate session, subject, and acquisition metatada by parsing the dicom header, using pydicom.
+    """
     import argparse
     ap = argparse.ArgumentParser()
     ap.add_argument('dcmzip', help='path to dicom zip')
@@ -193,7 +217,11 @@ if __name__ == '__main__':
     logging.getLogger('sctran.data').setLevel(logging.INFO)
     log.info('job start: %s' % datetime.datetime.utcnow())
 
-    results = dicom_classify(args.dcmzip, args.outbase, args.timezone)
+    metadatafile = dicom_classify(args.dcmzip, args.outbase, args.timezone)
+
+    if os.path.exists(metadatafile):
+        log.info('generated %s' % metadatafile)
+    else:
+        log.info('failure! %s was not generated!' % metadatafile)
 
     log.info('job stop: %s' % datetime.datetime.utcnow())
-    log.info('generated %s' % ', '.join(results))
