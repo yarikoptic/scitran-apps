@@ -10,23 +10,20 @@
 #        /data/outprefix
 #
 
-FROM ubuntu-debootstrap:trusty
+FROM ubuntu:trusty
 
 MAINTAINER Michael Perry <lmperry@stanford.edu>
 
 # Install dependencies
-RUN apt-get update && apt-get -y install python-dev \
-   python-virtualenv \
-   git \
-   libjpeg-dev \
-   zlib1g-dev
+RUN apt-get update && apt-get -y install \
+    python \
+    python-pip
 
 
 # Install scitran.data dependencies
 RUN pip install \
     pytz \
-    pydicom \
-    tzlocal
+    pydicom
 
 # Make directory for flywheel spec (v0)
 ENV FLYWHEEL /flywheel/v0
@@ -34,8 +31,10 @@ RUN mkdir -p ${FLYWHEEL}
 COPY run ${FLYWHEEL}/run
 COPY manifest.json ${FLYWHEEL}/manifest.json
 
-# Put the python code in place
+# Add code to determine measurement from dicom descrip (label)
 ADD https://raw.githubusercontent.com/scitran/utilities/master/measurement_from_label.py ${FLYWHEEL}/measurement_from_label.py
+
+# Copy classifier code into place
 COPY dicom-mr-classifier.py ${FLYWHEEL}/dicom-mr-classifier.py
 
 # Set the entrypoint

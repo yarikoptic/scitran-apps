@@ -4,7 +4,6 @@ import os
 import json
 import pytz
 import dicom
-import tzlocal
 import logging
 import zipfile
 import datetime
@@ -40,7 +39,7 @@ def timestamp(date, time, timezone):
         return datetime.datetime.strptime(date + time[:6], '%Y%m%d%H%M%S')
     return None
 
-def get_time(dcm, timezone):
+def get_timestamp(dcm, timezone):
     """
     Parse Study Date and Time, return acquisition and session timestamps
     """
@@ -81,7 +80,7 @@ def get_time(dcm, timezone):
         acquisition_timestamp = ''
     return session_timestamp, acquisition_timestamp
 
-def get_sex(sex_str):
+def get_sex_string(sex_str):
     """
     Return male or female string.
     """
@@ -124,10 +123,10 @@ def dicom_classify(zip_file_path, outbase, timezone):
     # Extract the header values
     header = {}
     exclude = ['[Unknown]', 'PixelData', 'Pixel Data',  '[User defined data]', '[Protocol Data Block (compressed)]', '[Histogram tables]', '[Unique image iden]']
-    types = [int, float, str, list]
-    for t in dcm.dir():
-        if t not in exclude:
-            value = dcm.get(t)
+    types = [int, float, list]
+    for tag in dcm.dir():
+        if tag not in exclude:
+            value = dcm.get(tag)
             if value:
                 if type(value) not in types:
                     try:
@@ -135,26 +134,11 @@ def dicom_classify(zip_file_path, outbase, timezone):
                     except:
                         value = str(value)
                 if (type(value) == str and len(value) < 10240):
-                    header[t] = value
+                    header[tag] = value
                 elif type(value) != str and type(value) in types:
-                    header[t] = value
+                    header[tag] = value
                 else:
-                    print 'Excluding ' + t
-
-    # header = {}
-    # exclude = ['[Unknown]', 'Pixel Data', '[User defined data]', '[Protocol Data Block (compressed)]', '[Histogram tables]', '[Unique image iden]']
-    # types = [int, float, str, list, tuple]
-    # for k in dcm.keys():
-    #     if hasattr(dcm[k], 'name') and hasattr(dcm[k], 'value') and (dcm[k].name not in exclude):
-    #         value = dcm[k].value
-    #         if type(value) not in types:
-    #             try:
-    #                 value = float(value)
-    #             except:
-    #                 value = str(value)
-    #         header[dcm[k].name.replace('[','').replace(']','')] = value
-    #     else:
-    #         pass
+                    print 'Excluding ' + tag
     log.info('done')
 
     # Build metadata
@@ -162,7 +146,7 @@ def dicom_classify(zip_file_path, outbase, timezone):
 
     # Session metadata
     metadata['session'] = {}
-    session_timestamp, acquisition_timestamp = get_time(dcm, timezone);
+    session_timestamp, acquisition_timestamp = get_timestamp(dcm, timezone);
     if session_timestamp:
         metadata['session']['timestamp'] = session_timestamp
     if hasattr(dcm, 'OperatorsName') and dcm.get('OperatorsName'):
@@ -170,8 +154,8 @@ def dicom_classify(zip_file_path, outbase, timezone):
 
     # Subject Metadata
     metadata['session']['subject'] = {}
-    if hasattr(dcm, 'PatientSex') and get_sex(dcm.get('PatientSex')):
-        metadata['session']['subject']['sex'] = get_sex(dcm.get('PatientSex'))
+    if hasattr(dcm, 'PatientSex') and get_sex_string(dcm.get('PatientSex')):
+        metadata['session']['subject']['sex'] = get_sex_string(dcm.get('PatientSex'))
     if hasattr(dcm, 'PatientAge') and dcm.get('PatientAge'):
         metadata['session']['subject']['age'] = parse_patient_age(dcm.get('PatientAge'))
     if hasattr(dcm, 'PatientName') and dcm.get('PatientName').given_name:

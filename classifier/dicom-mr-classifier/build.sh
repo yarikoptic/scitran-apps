@@ -4,4 +4,4 @@
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
-docker build --no-cache --tag scitran/dicom-mr-classifier:classify $DIR
+docker build --no-cache --tag scitran/dicom-mr-classifier $DIR
