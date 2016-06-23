@@ -1,0 +1,22 @@
+{
+    "name": "Build Cortical Surface Object (DEMO)",
+    "description": "This gear will run an image segmentation algorithm on an anatomical image and generate, from that segmentation, a cortical surface object (OBJ) file.",
+    "author": "Michael Perry <lmperry@stanford.edu>",
+    "url": "https://en.wikipedia.org/wiki/Wavefront_.obj_file",
+    "source": "https://github.com/scitran/apps/demo/cortex-demo",
+    "license": "GPL-2.0",
+    "flywheel": "0",
+    "version": "0.0.0",
+    "config": {
+        },
+    "inputs": {
+        "anatomy": {
+            "base": "file",
+            "type": {
+                "enum": [
+                "nifti"
+                ]
+            }
+        }
+    }
+}
