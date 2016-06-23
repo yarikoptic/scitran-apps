@@ -1,0 +1,42 @@
+#! /bin/bash
+#
+# Run dtiinit-demo
+#
+
+CONTAINER="[scitran/cortex-demo]"
+
+# Built to flywheel-v0 spec.
+FLYWHEEL_BASE=/flywheel/v0
+
+# Make sure that /output directory is empty (all content will be removed later).
+OUTPUT_DIR=$FLYWHEEL_BASE/output
+
+echo -e "$CONTAINER  Initiated"
+
+if [[ ! -d "$OUTPUT_DIR" ]]
+    then
+        echo "$CONTAINER  $OUTPUT_DIR not found!"
+        exit 1
+fi
+
+# Unzip demo data and move to output dir
+mv $FLYWHEEL_BASE/*.csv $OUTPUT_DIR
+mv $FLYWHEEL_BASE/*.nii.gz $OUTPUT_DIR
+mv $FLYWHEEL_BASE/metadata.json $OUTPUT_DIR/.metadata.json
+
+# Get a list of the files in the output directory
+outputs=$(find $OUTPUT_DIR/* -maxdepth 0 -type f)
+
+# If outputs exist, generate metadata, and exit
+if [[ -z $outputs ]]
+    then
+        echo "$CONTAINER  No results found in output directory... Exiting"
+        exit 1
+    else
+        cd $OUTPUT_DIR
+        echo -e "$CONTAINER  Wrote: `ls`"
+        echo -e "$CONTAINER  Done!"
+fi
+
+exit 0
+
