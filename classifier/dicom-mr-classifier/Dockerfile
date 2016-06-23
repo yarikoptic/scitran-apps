@@ -1,7 +1,6 @@
 # scitran/dicom-mr-classifier
 #
-# Use Scitran Data to classify raw DICOM data (zip) from Siemens or GE.
-# See http://github.com/scitran/data for source code.
+# Use pyDicom to classify raw DICOM data (zip) from Siemens, GE or Philips.
 #
 # Example usage:
 #   docker run --rm -ti \
@@ -11,31 +10,20 @@
 #        /data/outprefix
 #
 
-FROM ubuntu-debootstrap:trusty
+FROM ubuntu:trusty
 
 MAINTAINER Michael Perry <lmperry@stanford.edu>
 
 # Install dependencies
-RUN apt-get update && apt-get -y install python-dev \
-   python-virtualenv \
-   git \
-   libjpeg-dev \
-   zlib1g-dev
+RUN apt-get update && apt-get -y install \
+    python \
+    python-pip
 
-# Link libs: pillow jpegi and zlib support hack
-RUN ln -s /usr/lib/x86_64-linux-gnu/libjpeg.so /usr/lib
-RUN ln -s /usr/lib/x86_64-linux-gnu/libz.so /usr/lib
 
 # Install scitran.data dependencies
 RUN pip install \
-    numpy==1.9.0 \
     pytz \
-    tzlocal \
-    pillow \
-    git+https://github.com/scitran/pydicom.git@0.9.9_value_vr_mismatch \
-    git+https://github.com/nipy/nibabel.git@3bc31e9a6191fc54667b3387ed5dfaced46bf755 \
-    git+https://github.com/moloney/dcmstack.git@6d49fe01235c08ae63c76fa2f3943b49c9b9832d \
-    git+https://github.com/scitran/data.git@a516fdc39d75a6e4ac75d0e179e18f3a5fc3c0af
+    pydicom
 
 # Make directory for flywheel spec (v0)
 ENV FLYWHEEL /flywheel/v0
@@ -43,7 +31,10 @@ RUN mkdir -p ${FLYWHEEL}
 COPY run ${FLYWHEEL}/run
 COPY manifest.json ${FLYWHEEL}/manifest.json
 
-# Put the python code in place
+# Add code to determine measurement from dicom descrip (label)
+ADD https://raw.githubusercontent.com/scitran/utilities/master/measurement_from_label.py ${FLYWHEEL}/measurement_from_label.py
+
+# Copy classifier code into place
 COPY dicom-mr-classifier.py ${FLYWHEEL}/dicom-mr-classifier.py
 
 # Set the entrypoint
