@@ -32,22 +32,24 @@ if [[ "$input_file" == *.zip ]] ; then
     cd $INPUT_DIR
     echo "$CONTAINER  Unzipping $input_file"
     unzip -q "`basename "$input_file"`"
+    dicom_dir=$(find $INPUT_DIR/* -maxdepth 0 -not -path '*/\.*' -type d)
+    if [ -z "$dicom_dir" ] ; then
+        dicom_dir=$INPUT_DIR
+    fi
+
 elif [[ "$input_file" == *.gz ]] ; then
     cd $INPUT_DIR
     echo "$CONTAINER  Gunzipping $input_file"
     gunzip -q "$input_file"
     dicom_dir=$INPUT_DIR
+
 else
     dicom_dir=$INPUT_DIR
 fi
 
-if [ -z "$dicom_dir" ] ; then
-    dicom_dir=$(find $INPUT_DIR/* -maxdepth 0 -not -path '*/\.*' -type d)
-fi
-
 # Run the algorithm
 echo -e "$CONTAINER  running dcm2nii..."
-dcm2nii $@ -o "$OUTPUT_DIR" "$dicom_dir"
+dcm2nii $@ -o "$OUTPUT_DIR" "$dicom_dir" &> /dev/null
 
 # Get a list of the files in the output directory
 outputs=`find $OUTPUT_DIR -not -path '*/\.*' -type f -name "*"`
@@ -58,7 +60,7 @@ if [ -z "$outputs" ] ; then
     exit 1
 else
     chmod -R 777 $OUTPUT_DIR
-    $FLYWHEEL_BASE/metadata_create.py $OUTPUT_DIR
+    $FLYWHEEL_BASE/metadata_create.py $OUTPUT_DIR $CONTAINER
     echo -e "$CONTAINER  Success! Wrote:\n`ls $OUTPUT_DIR`"
 fi
 

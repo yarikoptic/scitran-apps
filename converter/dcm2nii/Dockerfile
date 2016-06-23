@@ -27,8 +27,10 @@ COPY dcm2nii.ini $DCM2NIIDIR/dcm2nii.ini
 # Make directory for flywheel spec (v0)
 ENV FLYWHEEL /flywheel/v0
 RUN mkdir -p ${FLYWHEEL}
+
+# Add executables and manifest
 COPY run ${FLYWHEEL}/run
-COPY metadata_create.py ${FLYWHEEL}/metadata_create.py
+ADD https://raw.githubusercontent.com/scitran/utilities/daf5ebc7dac6dde1941ca2a6588cb6033750e38c/metadata_from_gear_output.py ${FLYWHEEL}/metadata_create.py
 RUN chmod +x ${FLYWHEEL}/metadata_create.py
 COPY manifest.json ${FLYWHEEL}/manifest.json
 
