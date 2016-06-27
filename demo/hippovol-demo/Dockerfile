@@ -7,6 +7,7 @@ MAINTAINER Michael Perry <lmperry@stanford.edu>
 # Make directory for flywheel spec (v0)
 ENV FLYWHEEL /flywheel/v0
 RUN mkdir -p ${FLYWHEEL}
+COPY manifest.json ${FLYWHEEL}
 
 # Run script and metadata code
 COPY run ${FLYWHEEL}/run
