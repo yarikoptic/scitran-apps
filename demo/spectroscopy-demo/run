@@ -19,8 +19,13 @@ if [[ ! -d "$OUTPUT_DIR" ]]
         exit 1
 fi
 
-# Unzip demo data and move to output dir
+# move demo output to output dir
 mv $FLYWHEEL_BASE/*.csv $OUTPUT_DIR
+
+
+
+# .metadata.json required to indicate gear completed successfully.
+echo '{ "acquisition" : { "files" : [{ "name" : "spectrum.csv" }] } }' > "/flywheel/v0/output/.metadata.json"
 
 # Get a list of the files in the output directory
 outputs=$(find $OUTPUT_DIR/* -maxdepth 0 -type f)

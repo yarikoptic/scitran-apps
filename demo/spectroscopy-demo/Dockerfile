@@ -1,8 +1,8 @@
-# scitran/hippovol-demo
+# scitran/spectroscopy-demo
 #
 
 FROM ubuntu:14.04
-MAINTAINER Michael Perry <lmperry@stanford.edu>
+MAINTAINER Ryan Sanford <ryansanford@flywheel.io>
 
 # Make directory for flywheel spec (v0)
 ENV FLYWHEEL /flywheel/v0
