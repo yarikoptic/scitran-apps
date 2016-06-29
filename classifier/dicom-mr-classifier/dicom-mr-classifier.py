@@ -18,7 +18,7 @@ def parse_patient_age(age):
     convert from 70d, 10w, 2m, 1y to datetime.timedelta object.
     Returns age as duration in seconds.
     """
-    if age == 'None':
+    if age == 'None' or not age:
         return None
 
     conversion = {  # conversion to days
@@ -29,7 +29,13 @@ def parse_patient_age(age):
     }
     scale = age[-1:]
     value = age[:-1]
-    return datetime.timedelta(int(value) * conversion.get(scale)).total_seconds()
+    age_in_seconds = datetime.timedelta(int(value) * conversion.get(scale)).total_seconds()
+
+    # Make sure that the age is reasonable
+    if not age_in_seconds or age_in_seconds <= 0:
+        age_in_seconds = None
+
+    return age_in_seconds
 
 def timestamp(date, time, timezone):
     """
@@ -157,11 +163,30 @@ def dicom_classify(zip_file_path, outbase, timezone):
     if hasattr(dcm, 'PatientSex') and get_sex_string(dcm.get('PatientSex')):
         metadata['session']['subject']['sex'] = get_sex_string(dcm.get('PatientSex'))
     if hasattr(dcm, 'PatientAge') and dcm.get('PatientAge'):
-        metadata['session']['subject']['age'] = parse_patient_age(dcm.get('PatientAge'))
+        age = parse_patient_age(dcm.get('PatientAge'))
+        if age:
+            metadata['session']['subject']['age'] = age
     if hasattr(dcm, 'PatientName') and dcm.get('PatientName').given_name:
+        # If the first name or last name field has a space-separated string, and one or the other field is not
+        # present, then we assume that the operator put both first and last names in that one field. We then
+        # parse that field to populate first and last name.
         metadata['session']['subject']['firstname'] = dcm.get('PatientName').given_name
+        if not dcm.get('PatientName').family_name:
+            name = dcm.get('PatientName').given_name.split(' ')
+            if len(name) == 2:
+                first = name[0]
+                last = name[1]
+                metadata['session']['subject']['lastname'] = last
+                metadata['session']['subject']['firstname'] = first
     if hasattr(dcm, 'PatientName') and dcm.get('PatientName').family_name:
         metadata['session']['subject']['lastname'] = dcm.get('PatientName').family_name
+        if not dcm.get('PatientName').given_name:
+            name = dcm.get('PatientName').family_name.split(' ')
+            if len(name) == 2:
+                first = name[0]
+                last = name[1]
+                metadata['session']['subject']['lastname'] = last
+                metadata['session']['subject']['firstname'] = first
 
     # Acquisition metadata
     metadata['acquisition'] = {}
