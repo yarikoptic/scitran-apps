@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+import re
 import json
 import pytz
 import dicom
@@ -103,6 +104,23 @@ def get_sex_string(sex_str):
         sex = ''
     return sex
 
+def assign_type(s):
+    """
+    Sets the type of a given input.
+    """
+    if type(s) == list:
+        return s
+    else:
+        s = str(s)
+        try:
+            return int(s)
+        except ValueError:
+            try:
+                return float(s)
+            except ValueError:
+                return re.sub(r'[^\x00-\x7f]',r'', str(s)) # Remove non-ascii characters
+
+
 def dicom_classify(zip_file_path, outbase, timezone):
     """
     Extracts metadata from dicom file header within a zip file and writes to .metadata.json.
@@ -140,13 +158,12 @@ def dicom_classify(zip_file_path, outbase, timezone):
             value = dcm.get(tag)
             if value:
                 if type(value) not in types:
-                    try:
-                        value = float(value)
-                    except:
-                        value = str(value)
-                if (type(value) == str and len(value) < 10240):
+                    value = assign_type(value)
+
+                # Put the value in the header
+                if type(value) == str and len(value) < 10240: # Max dicom field length
                     header[tag] = value
-                elif type(value) != str and type(value) in types:
+                elif type(value) in types:
                     header[tag] = value
                 else:
                     print 'Excluding ' + tag
