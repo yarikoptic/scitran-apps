@@ -29,6 +29,11 @@ def parse_patient_age(age):
     }
     scale = age[-1:]
     value = age[:-1]
+    if scale not in conversion.keys():
+        # Assume years
+        scale = 'Y'
+        value = age
+
     age_in_seconds = datetime.timedelta(int(value) * conversion.get(scale)).total_seconds()
 
     # Make sure that the age is reasonable
@@ -163,9 +168,12 @@ def dicom_classify(zip_file_path, outbase, timezone):
     if hasattr(dcm, 'PatientSex') and get_sex_string(dcm.get('PatientSex')):
         metadata['session']['subject']['sex'] = get_sex_string(dcm.get('PatientSex'))
     if hasattr(dcm, 'PatientAge') and dcm.get('PatientAge'):
-        age = parse_patient_age(dcm.get('PatientAge'))
-        if age:
-            metadata['session']['subject']['age'] = age
+        try:
+            age = parse_patient_age(dcm.get('PatientAge'))
+            if age:
+                metadata['session']['subject']['age'] = age
+        except:
+            pass
     if hasattr(dcm, 'PatientName') and dcm.get('PatientName').given_name:
         # If the first name or last name field has a space-separated string, and one or the other field is not
         # present, then we assume that the operator put both first and last names in that one field. We then
