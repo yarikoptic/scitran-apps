@@ -220,6 +220,8 @@ def dicom_classify(zip_file_path, outbase, timezone):
     if hasattr(dcm, 'SeriesDescription') and dcm.get('SeriesDescription'):
         metadata['acquisition']['label'] = dcm.get('SeriesDescription')
         metadata['acquisition']['measurement'] = measurement_from_label.infer_measurement(dcm.get('SeriesDescription'))
+    else:
+        metadata['acquisition']['measurement'] = 'unknown'
     if acquisition_timestamp:
         metadata['acquisition']['timestamp'] = acquisition_timestamp
 
