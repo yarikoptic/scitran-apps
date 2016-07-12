@@ -5,6 +5,7 @@ import re
 import json
 import pytz
 import dicom
+import string
 import logging
 import zipfile
 import datetime
@@ -118,7 +119,14 @@ def assign_type(s):
             try:
                 return float(s)
             except ValueError:
-                return re.sub(r'[^\x00-\x7f]',r'', str(s)) # Remove non-ascii characters
+                return format_string(s)
+
+def format_string(in_string):
+    formatted = re.sub(r'[^\x00-\x7f]',r'', str(in_string)) # Remove non-ascii characters
+    formatted = filter(lambda x: x in string.printable, formatted)
+    if len(formatted) == 1 and formatted == '?':
+        formatted = None
+    return formatted
 
 
 def dicom_classify(zip_file_path, outbase, timezone):
@@ -127,20 +135,20 @@ def dicom_classify(zip_file_path, outbase, timezone):
     """
 
     # Check for input file path
-    if not os.path.exists( zip_file_path):
-        print 'could not find %s' %  zip_file_path
-        print 'checking input directory ...'
+    if not os.path.exists(zip_file_path):
+        log.debug('could not find %s' %  zip_file_path)
+        log.debug('checking input directory ...')
         if os.path.exists(os.path.join('/input', zip_file_path)):
             zip_file_path = os.path.join('/input', zip_file_path)
-            print 'found %s' % zip_file_path
+            log.debug('found %s' % zip_file_path)
 
     if not outbase:
         outbase = '/flywheel/v0/output'
         log.info('setting outbase to %s' % outbase)
 
-    # Extract the first file in the zip to /tmp/ and read it
+    # Extract the last file in the zip to /tmp/ and read it
     zip = zipfile.ZipFile(zip_file_path)
-    for n in range(0, len(zip.namelist())):
+    for n in range((len(zip.namelist()) -1), -1, -1):
         dcm_path = zip.extract(zip.namelist()[n], '/tmp')
         if os.path.isfile(dcm_path):
             try:
@@ -151,22 +159,23 @@ def dicom_classify(zip_file_path, outbase, timezone):
 
     # Extract the header values
     header = {}
-    exclude = ['[Unknown]', 'PixelData', 'Pixel Data',  '[User defined data]', '[Protocol Data Block (compressed)]', '[Histogram tables]', '[Unique image iden]']
-    types = [int, float, list]
-    for tag in dcm.dir():
-        if tag not in exclude:
-            value = dcm.get(tag)
+    exclude_tags = ['[Unknown]', 'PixelData', 'Pixel Data',  '[User defined data]', '[Protocol Data Block (compressed)]', '[Histogram tables]', '[Unique image iden]']
+    types = [list, float, int]
+    exclude_types = [dicom.sequence.Sequence]
+    tags = dcm.dir()
+    for tag in tags:
+        if (tag not in exclude_tags) and (type(dcm.get(tag)) not in exclude_types):
+            value = assign_type(dcm.get(tag))
             if value:
-                if type(value) not in types:
-                    value = assign_type(value)
-
                 # Put the value in the header
                 if type(value) == str and len(value) < 10240: # Max dicom field length
                     header[tag] = value
                 elif type(value) in types:
                     header[tag] = value
                 else:
-                    print 'Excluding ' + tag
+                    log.debug('Excluding ' + tag)
+            else:
+                log.debug('Excluding ' + tag)
     log.info('done')
 
     # Build metadata
@@ -251,7 +260,7 @@ if __name__ == '__main__':
 
     log.setLevel(getattr(logging, args.log_level.upper()))
     logging.getLogger('sctran.data').setLevel(logging.INFO)
-    log.info('job start: %s' % datetime.datetime.utcnow())
+    log.info('start: %s' % datetime.datetime.utcnow())
 
     metadatafile = dicom_classify(args.dcmzip, args.outbase, args.timezone)
 
@@ -260,4 +269,4 @@ if __name__ == '__main__':
     else:
         log.info('failure! %s was not generated!' % metadatafile)
 
-    log.info('job stop: %s' % datetime.datetime.utcnow())
+    log.info('stop: %s' % datetime.datetime.utcnow())
