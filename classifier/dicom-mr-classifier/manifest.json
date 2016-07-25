@@ -1,5 +1,5 @@
 {
-	"name":     "dicom_mr_classifier",
+	"name":     "dicom-mr-classifier",
 	"label":     "SciTran DICOM MR Classifier",
 	"description": "Extract metadata from raw DICOM data from Siemens, Philips, or GE.",
 	"author": "Michael Perry <lmperry@stanford.edu>",
