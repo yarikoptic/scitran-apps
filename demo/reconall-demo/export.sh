@@ -2,7 +2,7 @@
 # Exports the container in the cwd.
 # The container can be exported once it's started with
 gear=reconall-demo
-version=0.0.1
+version=0.0.2
 outname=$gear-$version.tar
 container=$gear
 image=scitran/$gear

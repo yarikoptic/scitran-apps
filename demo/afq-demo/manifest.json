@@ -1,12 +1,13 @@
 {
-    "name": "AFQ: Automated Fiber Quantification (DEMO)",
+    "name": "afq-demo",
+    "label": "AFQ: Automated Fiber Quantification (DEMO)",
     "description": "AFQ was designed [by Jason D. Yeatman, et al.] to generate Tract Profiles of tissue properties for major fiber tracts in healthy and diseased brains. Online documentation can be found at: https://github.com/yeatmanlab/AFQ/wiki.",
     "author": "Michael Perry <lmperry@stanford.edu>",
     "url": "https://github.com/yeatmanlab/afq",
     "source": "https://github.com/scitran/apps/demo/afq-demo",
     "license": "GPL-2.0",
     "flywheel": "0",
-    "version": "0.0.0",
+    "version": "0.0.1",
     "config": {
         },
     "inputs": {

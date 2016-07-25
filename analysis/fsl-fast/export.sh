@@ -2,7 +2,7 @@
 # Exports the container in the cwd.
 # The container can be exported once it's started with
 
-version=0.0.6
+version=0.0.7
 outname=fast-$version.tar
 container=fsl-fast
 image=scitran/fsl-fast
