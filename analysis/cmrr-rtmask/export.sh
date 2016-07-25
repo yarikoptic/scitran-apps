@@ -2,7 +2,7 @@
 # Exports the container in the cwd.
 # The container can be exported once it's started with
 gear=cmrr-rtmask
-version=0.0.2
+version=0.0.3
 outname=$gear-$version.tar
 container=$gear
 image=scitran/$gear

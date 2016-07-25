@@ -2,7 +2,7 @@
 # Exports the container in the cwd.
 # The container can be exported once it's started with
 
-version=0.3.4
+version=0.3.5
 outname=dcm_convert-$version.tar
 container=dcm_convert
 image=scitran/dcm-convert

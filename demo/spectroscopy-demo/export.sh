@@ -2,7 +2,7 @@
 # Exports the container in the cwd.
 # The container can be exported once it's started with
 gear=spectroscopy-demo
-version=0.0.0
+version=0.0.1
 outname=$gear-$version.tar
 container=$gear
 image=scitran/$gear
