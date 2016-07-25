@@ -27,7 +27,7 @@ RUN chmod +x ${FLYWHEEL}/metadata_create.py
 
 # Add data from google storage
 WORKDIR ${FLYWHEEL}
-ADD https://storage.googleapis.com/flywheel/gears/data/demo_gears/recon-all/reconall.zip ./reconall.zip
+ADD https://storage.googleapis.com/flywheel/gears/data/demo_gears/recon-all/reconall_160724.zip ./reconall.zip
 
 # Configure entrypoint
 ENTRYPOINT ["/flywheel/v0/run"]
