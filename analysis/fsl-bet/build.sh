@@ -1,7 +1,9 @@
 #!/bin/bash
-# Builds the fsl-bet container.
-# The container can be exported using the export.sh script
+# Build container within this context
+
+CONTAINER=scitran/fsl-bet
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
-docker build --no-cache --tag scitran/fsl-bet $DIR
+docker build --no-cache --tag $CONTAINER $DIR
+
