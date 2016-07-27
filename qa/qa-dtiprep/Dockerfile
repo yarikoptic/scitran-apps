@@ -2,9 +2,9 @@
 #
 # Example usage:
 #    docker run --rm -ti \
-#       -v </path/to/input/data>:/flywheel/v0/input/nifti \
+#       -v </path/to/input/data>:/flywheel/v0/input \
 #       -v </path/to/output>:/flywheel/v0/output \
-#       scitran/qa-dtiprep /flywheel/v0/input/<t1_file.nii.gz>
+#       scitran/qa-dtiprep
 
 FROM vistalab/fsl-v5.0
 MAINTAINER Michael Perry <lmperry@stanford.edu>
