@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 
-#Must have:
-#mricron (for dicom to nifti)
-#DWIConvert (for dicom to nrrd)
-#DTIPrep
+# Must have the following installed and on the system path:
+# mricron (for dicom to nifti)
+# DWIConvert (for dicom to nrrd)
+# DTIPrep
+# FSL
+
+# Author: Michelle Han <mihan@stanford.edu>
 
 #Convert nifti to nrrd
 def nifti2nrrd(nifti, bvec, bval, subject, outdir):
