@@ -43,7 +43,7 @@ if [[ -z $@ ]]
       if [[ -n $dwi_nifti ]]
         then
             echo -e "$CONTAINER  Starting DTIPrep..."
-            $FLYWHEEL_BASE/qa-dtiprep.py --nifti "$dwi_nifti" --bval "$dwi_bval" --bvec "$dwi_bvec" &> /dev/null
+            $FLYWHEEL_BASE/qa-dtiprep.py --nifti "$dwi_nifti" --bval "$dwi_bval" --bvec "$dwi_bvec" 2>&1 | tee $OUTPUT_DIR/dtiprep_log.txt
       else
             echo "No inputs were provided and $INPUT_DIR has no valid input files!"
             exit 1

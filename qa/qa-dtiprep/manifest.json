@@ -7,7 +7,7 @@
     "source": "https://github.com/scitran/apps/tree/master/qa/qa-dtiprep",
     "license": "Apache-2.0",
     "flywheel": "0",
-    "version": "0.0.0",
+    "version": "0.0.1",
     "config": {
         },
     "inputs": {
