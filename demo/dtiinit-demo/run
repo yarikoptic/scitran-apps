@@ -24,6 +24,9 @@ cd $FLYWHEEL_BASE
 unzip $FLYWHEEL_BASE/DTI.zip
 mv $FLYWHEEL_BASE/DTI/* $OUTPUT_DIR
 
+# Print config
+cp $FLYWHEEL_BASE/config.json $OUTPUT_DIR
+
 # Get a list of the files in the output directory
 outputs=$(find $OUTPUT_DIR/* -maxdepth 0 -type f)
 
