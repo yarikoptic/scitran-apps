@@ -8,6 +8,8 @@
 	"license": "GPL-2.0",
 	"flywheel": "0",
 	"version": "0.0.2",
+	"inputs": {
+	},
 	"config": {
 		"cutoffLower": {
 			"default": 10,
