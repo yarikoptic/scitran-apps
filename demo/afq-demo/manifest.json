@@ -137,11 +137,11 @@
 		},
 		"track_seedVoxelOffset_1": {
 			"default": 0.2500,
-			"type": "integer"
+			"type": "number"
 		},
 		"track_seedVoxelOffset_2": {
 			"default": 0.7500,
-			"type": "integer"
+			"type": "number"
 		},
 		"track_faMaskThresh": {
 			"default": 0.3000,
