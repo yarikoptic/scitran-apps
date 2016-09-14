@@ -7,8 +7,32 @@
 	"source": "https://github.com/scitran/apps/demo/afq-demo",
 	"license": "GPL-2.0",
 	"flywheel": "0",
-	"version": "0.0.2",
+	"version": "0.1.0",
 	"inputs": {
+		"diffusion": {
+			"base": "file",
+			"type": {
+				"enum": [
+					"nifti"
+				]
+			}
+		},
+		"bvec": {
+			"base": "file",
+			"type": {
+				"enum": [
+					"bvec"
+				]
+			}
+		},
+		"bval": {
+			"base": "file",
+			"type": {
+				"enum": [
+					"bval"
+				]
+			}
+		}
 	},
 	"config": {
 		"cutoffLower": {
