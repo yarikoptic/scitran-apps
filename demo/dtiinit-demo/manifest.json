@@ -7,9 +7,81 @@
     "source": "https://github.com/scitran/apps/demo/dtiinit-demo",
     "license": "GPL-2.0",
     "flywheel": "0",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "config": {
+        "bvalue": {
+            "type": "string",
+            "default": ""
         },
+        "gradDirsCode": {
+            "type": "string",
+            "default": ""
+        },
+        "clobber": {
+            "default": 0,
+            "type": "integer"
+        },
+        "dt6BaseName": {
+            "type": "string",
+            "default": ""
+        },
+        "flipLrApFlag": {
+            "default": 0,
+            "type": "integer"
+        },
+        "numBootStrapSamples": {
+            "default": 500,
+            "type": "integer"
+        },
+        "fitMethod": {
+            "default": "ls",
+            "type": "string"
+        },
+        "nStep": {
+            "default": 50,
+            "type": "integer"
+        },
+        "eddyCorrect": {
+            "default": 1,
+            "type": "integer"
+        },
+        "excludeVols": {
+            "type": "string",
+            "default": ""
+        },
+        "bsplineInterpFlag": {
+            "default": 0,
+            "type": "integer"
+        },
+        "phaseEncodeDir": {
+            "type": "integer",
+            "default": 2
+        },
+        "dwOutMm-1": {
+            "type": "integer",
+            "default": 2
+        },
+        "dwOutMm-2": {
+            "type": "integer",
+            "default": 2
+        },
+        "dwOutMm-3": {
+            "type": "integer",
+            "default": 2
+        },
+        "rotateBvecsWithRx": {
+            "default": 0,
+            "type": "integer"
+        },
+        "rotateBvecsWithCanXform": {
+            "default": 0,
+            "type": "integer"
+        },
+        "noiseCalcMethod": {
+            "type": "string",
+            "default": "b0"
+        }
+    },
     "inputs": {
         "diffusion": {
             "base": "file",
