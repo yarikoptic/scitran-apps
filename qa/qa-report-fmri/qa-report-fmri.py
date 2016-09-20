@@ -184,10 +184,10 @@ def compute_qa(ni, tr, spike_thresh=6., nskip=4):
 
 def generate_qa_report(nifti_file, nifti_path, force=False, spike_thresh=6., nskip=4):
     start_secs = time.time()
-    
+
     print('%s nifti file (%s) QA: Starting QA report...' % (time.asctime(), nifti_file))
 
-    ni_fname = os.path.join(nifti_path, nifti_file)    
+    ni_fname = os.path.join(nifti_path, nifti_file)
 
     ni = nb.load(ni_fname)
     tr = ni.get_header().get_zooms()[3]
@@ -207,13 +207,13 @@ def generate_qa_report(nifti_file, nifti_path, force=False, spike_thresh=6., nsk
             median_tsnr = np.ma.median(tsnr)[0]
         except:
             median_tsnr = np.ma.median(0)
-        
-        
+
+
         qa_filenames = [u'qa_report.json', u'qa_report.png']
 
         json_file = os.path.join(nifti_path, qa_filenames[0])
         print("%s nifti file (%s) QA: writing report to %s..." % (time.asctime(), nifti_file, json_file))
-        
+
         with open(json_file, 'w') as fp:
             json.dump({ 'version': qa_version,
                         'dataset': ni_fname, 'tr': tr.tolist(),
@@ -229,14 +229,14 @@ def generate_qa_report(nifti_file, nifti_path, force=False, spike_thresh=6., nsk
                         'spikes': spike_inds.tolist(),
                         'spike thresh': spike_thresh},
                       fp)
-        
+
         img_file = os.path.join(nifti_path, qa_filenames[1])
         print("%s nifti file (%s) QA: writing image to %s..." % (time.asctime(), nifti_file, img_file))
         plot_data(t_z, abs_disp, rel_disp, median_tsnr, spike_inds.shape[0], spike_thresh, img_file)
 
         print("%s nifti file (%s) QA: Finished in %0.2f minutes." % (time.asctime(), nifti_file, (time.time()-start_secs)/60.))
     return
-    
+
 
 class ArgumentParser(argparse.ArgumentParser):
     def __init__(self):

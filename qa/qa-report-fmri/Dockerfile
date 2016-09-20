@@ -36,13 +36,13 @@ RUN ln -s /usr/lib/x86_64-linux-gnu/libjpeg.so /usr/lib
 RUN ln -s /usr/lib/x86_64-linux-gnu/libz.so /usr/lib
 
 # Install scitran.data dependencies
-RUN  pip install pip --upgrade \
-    && pip install numpy --upgrade \
-    && pip install scipy --upgrade \
-    && pip install dipy --upgrade \
-    && pip install nibabel --upgrade \
-    && pip install nipy --upgrade \
-    && pip install matplotlib --upgrade
+RUN  pip install pip==8.1.2 \
+    && pip install numpy==1.11.0 \
+    && pip install scipy==0.17.1 \
+    && pip install dipy==0.11.0 \
+    && pip install nibabel==2.0.2 \
+    && pip install nipy==0.4.0 \
+    && pip install matplotlib==1.5.1
 
 # Trigger build of font cache
 RUN python -c "from matplotlib import font_manager"
