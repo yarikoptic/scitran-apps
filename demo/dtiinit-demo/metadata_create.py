@@ -60,4 +60,3 @@ if __name__ == '__main__':
         print '[scitran/' + gearname + ']  generated %s' % metafile
     else:
         print '[scitran/' + gearname + ']  Failed to create metadata.json'
-

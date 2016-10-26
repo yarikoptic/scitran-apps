@@ -2,6 +2,7 @@
     "name": "spectroscopy-demo",
     "label": "Spectroscopy (DEMO)",
     "description": "Automated segmentation of the human hippocampus along its longitudinal axis. This gear will run an image segmentation algorithm on an anatomical image and generate a measurement of hippocampal volume by segment.",
+    "maintainer": "Ryan Sanford <ryansanford@flywheel.io>",
     "author": "Ryan Sanford <ryansanford@flywheel.io>",
     "url": "https://github.com/scitran/apps/demo/spectroscopy-demo",
     "source": "https://github.com/scitran/apps/demo/spectroscopy-demo",
