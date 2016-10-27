@@ -1,1 +1,0 @@
-{"acquisition": {"files": [{"type": "tabular data", "name": "hippocampus_seg_volume.csv"}, {"type": "nifti", "name": "rh.asegHippo.nii.gz"}, {"type": "nifti", "name": "lh.asegHippo.nii.gz"}]}}
