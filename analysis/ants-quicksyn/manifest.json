@@ -1,0 +1,32 @@
+{
+    "name": "ants-quicksyn",
+    "label": "ANTs: Quick SyN - decent, fast registration",
+    "description": "TODO",
+    "maintainer": "Yaroslav Halchenko <debian@onerussian.com>",
+    "author": "ANTs Team et al.",
+    "url": "https://github.com/stnava/ANTs/",
+    "source": "https://github.com/scitran/apps/analysis/ants-quicksyn",
+    "license": "Apache-2.0",
+    "flywheel": "0",
+    "version": "0.0.1",
+    "config": {
+        },
+    "inputs": {
+        "target": {
+            "base": "file",
+            "type": {
+                "enum": [
+                "nifti"
+                ]
+            }
+        },
+        "input": {
+            "base": "file",
+            "type": {
+                "enum": [
+                "nifti"
+                ]
+            }
+        }
+   }
+}
